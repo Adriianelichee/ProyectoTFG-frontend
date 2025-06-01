@@ -5,7 +5,41 @@
   "projects": {
     "ProyectoTFG-frontend": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "skipTests": false,
+          "flat": false,
+          "style": "css",
+          "skipImport": false,
+          "changeDetection": "OnPush",
+          "viewEncapsulation": "Emulated",
+          "prefix": "app"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive",
+          "skipTests": false,
+          "prefix": "app"
+        },
+        "@schematics/angular:service": {
+          "type": "service",
+          "skipTests": false,
+          "flat": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": false,
+          "flat": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interface": {
+          "prefix": "I"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
