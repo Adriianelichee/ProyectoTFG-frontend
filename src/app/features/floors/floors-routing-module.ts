@@ -1,10 +1,18 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
+import { FloorsListComponent } from './floors-list.component';
+import { FloorsDetailComponent } from './floors-detail.component';
+import { AuthGuard } from '../../core/auth/auth-guard';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: FloorsListComponent },
+      { path: 'new', component: FloorsDetailComponent },
+      { path: ':id', component: FloorsDetailComponent }
+    ]
+  }
+];
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class FloorsRoutingModule { }
+export const FloorsRoutingModule = RouterModule.forChild(routes);

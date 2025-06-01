@@ -1,0 +1,89 @@
+/* src/app/core/auth/register.component.css */
+.register-container {
+  max-width: 450px;
+  margin: 60px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  background-color: #fdfdfd;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.validation-error {
+  color: #d9534f;
+  margin-top: 4px;
+}
+
+.error {
+  color: #d9534f;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.loading {
+  color: #007bff;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+button.btn-register {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button.btn-register:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+button.btn-register:hover:not(:disabled) {
+  background-color: #1e7e34;
+}
+
+.text-link {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.text-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.text-link a:hover {
+  text-decoration: underline;
+}

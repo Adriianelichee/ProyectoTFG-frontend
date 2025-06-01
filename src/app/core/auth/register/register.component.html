@@ -1,1 +1,132 @@
-<p>register.component works!</p>
+<!-- src/app/core/auth/register.component.html -->
+<div class="register-container">
+  <h2>Registro</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="firstName">Nombre</label>
+      <input id="firstName" type="text" formControlName="firstName" />
+      <div
+        class="validation-error"
+        *ngIf="firstNameControl.invalid && firstNameControl.touched"
+      >
+        <small *ngIf="firstNameControl.hasError('required')">
+          El nombre es obligatorio.
+        </small>
+        <small *ngIf="firstNameControl.hasError('maxLength')">
+          Máx. 45 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Apellido</label>
+      <input id="lastName" type="text" formControlName="lastName" />
+      <div
+        class="validation-error"
+        *ngIf="lastNameControl.invalid && lastNameControl.touched"
+      >
+        <small *ngIf="lastNameControl.hasError('required')">
+          El apellido es obligatorio.
+        </small>
+        <small *ngIf="lastNameControl.hasError('maxLength')">
+          Máx. 45 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+      <div
+        class="validation-error"
+        *ngIf="emailControl.invalid && emailControl.touched"
+      >
+        <small *ngIf="emailControl.hasError('required')">
+          El email es obligatorio.
+        </small>
+        <small *ngIf="emailControl.hasError('email')">
+          Formato inválido.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" formControlName="password" />
+      <div
+        class="validation-error"
+        *ngIf="passwordControl.invalid && passwordControl.touched"
+      >
+        <small *ngIf="passwordControl.hasError('required')">
+          La contraseña es obligatoria.
+        </small>
+        <small *ngIf="passwordControl.hasError('minlength')">
+          Mín. 6 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Teléfono</label>
+      <input id="phone" type="text" formControlName="phone" />
+      <div
+        class="validation-error"
+        *ngIf="phoneControl.invalid && phoneControl.touched"
+      >
+        <small *ngIf="phoneControl.hasError('required')">
+          El teléfono es obligatorio.
+        </small>
+        <small *ngIf="phoneControl.hasError('maxLength')">
+          Máx. 20 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Rol</label>
+      <select id="role" formControlName="role">
+        <option value="" disabled>Selecciona un rol</option>
+        <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
+      </select>
+      <div
+        class="validation-error"
+        *ngIf="roleControl.invalid && roleControl.touched"
+      >
+        <small>El rol es obligatorio.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="companyId">ID Empresa</label>
+      <input id="companyId" type="number" formControlName="companyId" />
+      <div
+        class="validation-error"
+        *ngIf="companyIdControl.invalid && companyIdControl.touched"
+      >
+        <small>El ID de empresa es obligatorio.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="providerId">ID Proveedor (opcional)</label>
+      <input id="providerId" type="number" formControlName="providerId" />
+    </div>
+
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    <div *ngIf="loading" class="loading">Registrando...</div>
+
+    <div class="buttons">
+      <button
+        class="btn-register"
+        type="submit"
+        [disabled]="registerForm.invalid || loading"
+      >
+        Registrarse
+      </button>
+    </div>
+  </form>
+  <p class="text-link">
+    ¿Ya tienes cuenta?
+    <a routerLink="/auth/login">Inicia sesión aquí</a>
+  </p>
+</div>

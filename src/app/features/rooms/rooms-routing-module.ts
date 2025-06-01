@@ -1,10 +1,19 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+// src/app/features/rooms/rooms-routing.ts
+import { Routes, RouterModule } from '@angular/router';
+import { RoomsListComponent } from './rooms-list.component';
+import { RoomsDetailComponent } from './rooms-detail.component';
+import { AuthGuard } from '../../core/auth/auth-guard';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: RoomsListComponent },
+      { path: 'new', component: RoomsDetailComponent },
+      { path: ':id', component: RoomsDetailComponent }
+    ]
+  }
+];
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class RoomsRoutingModule { }
+export const RoomsRoutingModule = RouterModule.forChild(routes);

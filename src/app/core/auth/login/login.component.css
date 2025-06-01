@@ -1,0 +1,83 @@
+/* src/app/core/auth/login.component.css */
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.validation-error {
+  color: #d9534f;
+  margin-top: 4px;
+}
+
+.error {
+  color: #d9534f;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.loading {
+  color: #007bff;
+  text-align: center;
+  margin: 10px 0;
+}
+
+button.btn-login {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button.btn-login:disabled {
+  background-color: #a0c4ff;
+  cursor: not-allowed;
+}
+
+button.btn-login:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.text-link {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.text-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.text-link a:hover {
+  text-decoration: underline;
+}

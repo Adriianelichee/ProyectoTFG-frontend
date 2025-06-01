@@ -1,10 +1,18 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
+import { CompaniesListComponent } from './companies-list.component';
+import { CompaniesDetailComponent } from './companies-detail.component';
+import { AuthGuard } from '../../core/auth/auth-guard';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: CompaniesListComponent },
+      { path: 'new', component: CompaniesDetailComponent },
+      { path: ':id', component: CompaniesDetailComponent }
+    ]
+  }
+];
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class CompaniesRoutingModule { }
+export const CompaniesRoutingModule = RouterModule.forChild(routes);
