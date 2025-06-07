@@ -1,0 +1,236 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Tu espacio de trabajo ideal</h1>
+    <p>Espacios flexibles diseñados para impulsar la productividad y la colaboración</p>
+    <div class="hero-buttons">
+      <a [routerLink]="isLoggedIn ? '/reservations/new' : '/auth/login'" class="btn-primary">
+        {{ isLoggedIn ? 'Reservar ahora' : 'Comenzar' }}
+      </a>
+      <a href="#spaces" class="btn-secondary">Explorar espacios</a>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="container">
+    <h2 class="section-title">¿Por qué elegir CoWork Space?</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let benefit of benefits">
+        <div class="feature-icon">
+          <i class="fas {{ benefit.icon }}"></i>
+        </div>
+        <h3>{{ benefit.title }}</h3>
+        <p>{{ benefit.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Spaces Section -->
+<section id="spaces" class="spaces">
+  <div class="container">
+    <h2 class="section-title">Nuestros espacios</h2>
+    <div class="spaces-tabs">
+      <button class="tab-btn active">Salas de reuniones</button>
+      <button class="tab-btn">Puestos de trabajo</button>
+      <button class="tab-btn">Servicios adicionales</button>
+    </div>
+
+    <div class="spaces-grid">
+      <div class="space-card" *ngFor="let room of featuredRooms">
+        <div class="space-image" [style.background-image]="'url(/room-' + room.roomId + '.jpg)'">
+          <div class="space-badge">Destacado</div>
+        </div>
+        <div class="space-content">
+          <h3>{{ room.roomName }}</h3>
+          <div class="space-details">
+            <span><i class="fas fa-users"></i> Capacidad: {{ room.capacity }}</span>
+            <span><i class="fas fa-euro-sign"></i> {{ room.hourlyRate }}/hora</span>
+          </div>
+          <p>Sala equipada con la última tecnología para tus reuniones y presentaciones.</p>
+          <a [routerLink]="isLoggedIn ? ['/rooms', room.roomId] : '/auth/login'" class="btn-outline">
+            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para reservar' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Floors Section -->
+<section class="floors">
+  <div class="container">
+    <h2 class="section-title">Nuestras plantas</h2>
+    <div class="floors-slider">
+      <div class="floor-slide" *ngFor="let floor of floors">
+        <div class="floor-image" [style.background-image]="'url(floor-' + floor.floorId + '.jpg)'"></div>
+        <div class="floor-content">
+          <h3>{{ floor.floorName }}</h3>
+          <p>{{ floor.description }}</p>
+          <a [routerLink]="['/floors', floor.floorId]" class="btn-text">Explorar planta <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+  <div class="container">
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+        <div class="testimonial-content">
+          <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+          <p>{{ testimonial.quote }}</p>
+        </div>
+        <div class="testimonial-author">
+          <img [src]="testimonial.image" [alt]="testimonial.name" class="author-image">
+          <div class="author-info">
+            <h4>{{ testimonial.name }}</h4>
+            <p>{{ testimonial.company }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-content">
+      <h2>¿Listo para transformar tu forma de trabajar?</h2>
+      <p>Únete a nuestra comunidad de profesionales y empresas innovadoras.</p>
+      <div class="cta-buttons">
+        <a [routerLink]="isLoggedIn ? '/reservations/new' : '/auth/register'" class="btn-primary">
+          {{ isLoggedIn ? 'Hacer una reserva' : 'Registrarse' }}
+        </a>
+        <a href="#contact" class="btn-secondary">Contactar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>Contacto</h2>
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>Calle Innovación, 123<br>28001 Madrid, España</p>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <p>+34 91 123 45 67</p>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <p>info&#64;coworkspace.com</p>
+        </div>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h2>Envíanos un mensaje</h2>
+        <form>
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" id="name" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Tu email">
+          </div>
+          <div class="form-group">
+            <label for="subject">Asunto</label>
+            <input type="text" id="subject" placeholder="Asunto del mensaje">
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea id="message" rows="5" placeholder="Tu mensaje"></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Enviar mensaje</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Map Section -->
+<section class="map">
+  <div class="map-container">
+    <!-- Aquí iría un iframe de Google Maps o similar -->
+    <div class="map-placeholder">
+      <i class="fas fa-map-marked-alt"></i>
+      <p>Mapa de ubicación</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq">
+  <div class="container">
+    <h2 class="section-title">Preguntas frecuentes</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Cuáles son los horarios de acceso?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Ofrecemos acceso 24/7 para todos nuestros miembros. Podrás trabajar cuando mejor te convenga, incluyendo fines de semana y días festivos.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Qué incluyen las tarifas?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Nuestras tarifas incluyen internet de alta velocidad, servicios de impresión, café y snacks, acceso a áreas comunes, y soporte técnico durante el horario de oficina.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Puedo cancelar mi reserva?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Sí, puedes cancelar tu reserva hasta 24 horas antes sin costo adicional. Las cancelaciones con menos de 24 horas de antelación tendrán un cargo del 50% del valor de la reserva.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Ofrecen descuentos para reservas a largo plazo?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Sí, ofrecemos descuentos especiales para reservas mensuales y trimestrales. Contacta con nuestro equipo de ventas para obtener más información sobre nuestros planes corporativos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter">
+  <div class="container">
+    <div class="newsletter-content">
+      <h2>Suscríbete a nuestro boletín</h2>
+      <p>Recibe las últimas novedades, ofertas especiales y consejos para mejorar tu productividad.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Tu correo electrónico">
+        <button type="submit" class="btn-primary">Suscribirse</button>
+      </form>
+    </div>
+  </div>
+</section>

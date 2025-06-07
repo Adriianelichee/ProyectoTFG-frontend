@@ -1,0 +1,148 @@
+<!-- register.component.html -->
+<div class="login-wrapper register-wrapper">
+  <div class="register-card tilt-card">
+    <div class="logo-section">
+      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo" />
+      <h1 class="brand">CoWork Space</h1>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Nombre -->
+      <div class="input-group">
+        <i class="fa fa-user icon"></i>
+        <input
+          id="firstName"
+          formControlName="firstName"
+          placeholder="Nombre"
+          autocomplete="given-name"
+        />
+      </div>
+      <div class="error" *ngIf="firstNameControl.invalid && firstNameControl.touched">
+        <small *ngIf="firstNameControl.hasError('required')">El nombre es obligatorio.</small>
+        <small *ngIf="firstNameControl.hasError('maxLength')">Máx. 45 caracteres.</small>
+      </div>
+
+      <!-- Apellidos -->
+      <div class="input-group">
+        <i class="fa fa-user icon"></i>
+        <input
+          id="lastName"
+          formControlName="lastName"
+          placeholder="Apellidos"
+          autocomplete="family-name"
+        />
+      </div>
+      <div class="error" *ngIf="lastNameControl.invalid && lastNameControl.touched">
+        <small *ngIf="lastNameControl.hasError('required')">El apellido es obligatorio.</small>
+        <small *ngIf="lastNameControl.hasError('maxLength')">Máx. 45 caracteres.</small>
+      </div>
+
+      <!-- Email -->
+      <div class="input-group">
+        <i class="fa fa-envelope icon"></i>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Correo electrónico"
+          autocomplete="email"
+        />
+      </div>
+      <div class="error" *ngIf="emailControl.invalid && emailControl.touched">
+        <small *ngIf="emailControl.hasError('required')">El email es obligatorio.</small>
+        <small *ngIf="emailControl.hasError('email')">Formato inválido.</small>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="input-group">
+        <i class="fa fa-lock icon"></i>
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Contraseña (mín. 6)"
+          autocomplete="new-password"
+        />
+        <button type="button" class="toggle" (click)="showPassword = !showPassword">
+          <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+      <div class="error" *ngIf="passwordControl.invalid && passwordControl.touched">
+        <small>La contraseña es obligatoria (mín. 6 caracteres).</small>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="input-group">
+        <i class="fa fa-phone icon"></i>
+        <input
+          id="phone"
+          formControlName="phone"
+          placeholder="Teléfono"
+          autocomplete="tel"
+        />
+      </div>
+      <div class="error" *ngIf="phoneControl.invalid && phoneControl.touched">
+        <small *ngIf="phoneControl.hasError('required')">El teléfono es obligatorio.</small>
+        <small *ngIf="phoneControl.hasError('maxLength')">Máx. 20 dígitos.</small>
+      </div>
+
+      <!-- Rol -->
+      <div class="input-group">
+        <i class="fa fa-user-tag icon"></i>
+        <select id="role" formControlName="role">
+          <option value="" disabled selected>Selecciona un rol</option>
+          <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
+        </select>
+      </div>
+      <div class="error" *ngIf="roleControl.invalid && roleControl.touched">
+        <small>El rol es obligatorio.</small>
+      </div>
+
+      <!-- ID Empresa -->
+      <div class="input-group" *ngIf="shouldShowCompanySelector()">
+        <i class="fa fa-building icon"></i>
+        <select id="companyId" formControlName="companyId">
+          <option value="" disabled selected>Selecciona una empresa</option>
+          <option *ngFor="let company of companies" [value]="company.companyId">
+            {{ company.companyName }}
+          </option>
+        </select>
+      </div>
+      <div class="error" *ngIf="companyIdControl.invalid && companyIdControl.touched && shouldShowCompanySelector()">
+        <small>La empresa es obligatoria.</small>
+      </div>
+
+      <div class="input-group" *ngIf="shouldShowProviderSelector()">
+        <i class="fa fa-briefcase icon"></i>
+        <select id="providerId" formControlName="providerId">
+          <option value="" disabled selected>Selecciona un proveedor</option>
+          <option *ngFor="let provider of providers" [value]="provider.providerId">
+            {{ provider.providerName }}
+          </option>
+        </select>
+      </div>
+      <div class="error" *ngIf="providerIdControl.invalid && providerIdControl.touched && shouldShowProviderSelector()">
+        <small>El proveedor es obligatorio.</small>
+      </div>
+
+      <div *ngIf="errorMessage" class="error">
+        <small><i class="fa fa-exclamation-triangle"></i> {{ errorMessage }}</small>
+      </div>
+
+      <button
+        class="btn-submit"
+        type="submit"
+        [disabled]="registerForm.invalid || loading"
+      >
+        <span *ngIf="!loading">Registrar</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+      <!-- Link a login -->
+      <p class="switch-link">
+        ¿Ya tienes cuenta?
+        <a routerLink="/auth/login">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
+</div>

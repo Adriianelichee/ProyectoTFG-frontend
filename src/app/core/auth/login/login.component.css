@@ -1,0 +1,321 @@
+/* Global reset to remove any scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Container fixed to viewport */
+.login-wrapper {
+  position: fixed;
+  inset: 0;               /* top:0; right:0; bottom:0; left:0; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Card */
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, #0ea5e9, #10b981);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;       /* evita scroll interno */
+}
+.login-card:hover {
+  box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+}
+
+/* Tilt effect */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.tilt-card:hover {
+  transform: rotateY(8deg) rotateX(3deg);
+}
+
+/* Logo */
+.logo-section {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+  border: 3px solid #ffffff;
+}
+.brand {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Inputs */
+.input-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  font-size: 1.1rem;
+}
+.input-group input {
+  width: 80%;
+  padding: 14px 48px 14px 42px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.input-group input::placeholder {
+  color: #ffffff;
+  opacity: 0.7;
+}
+.input-group input:focus {
+  outline: none;
+  background: #ffffff;
+  color: #222222;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.4);
+}
+.toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: black;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.toggle:hover {
+  color: #0ea5e9;
+}
+
+/* Errors */
+.error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  animation: shake 0.3s ease-out;
+}
+
+/* Options row */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+.remember-me {
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  user-select: none;
+}
+.remember-me input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+.remember-me input:checked ~ .checkmark {
+  background: #10b981;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.remember-me input:checked ~ .checkmark:after {
+  display: block;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.forgot {
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.forgot:hover {
+  color: black;
+}
+
+/* Submit button */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #10b981, #0ea5e9);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-submit:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+/* Switch link */
+.switch-link {
+  text-align: center;
+  margin-top: 1rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+.switch-link a {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.switch-link a:hover {
+  color: #10b981;
+}
+
+/* Social login */
+.social-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.85rem;
+  margin: 1.5rem 0;
+}
+.social-divider::before,
+.social-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ffffff;
+  opacity: 0.3;
+  margin: 0 0.75rem;
+}
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.social-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.social-btn:hover {
+  background: #ffffff;
+  color: #0ea5e9;
+  transform: scale(1.1);
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #ffffff;
+  border-top: 3px solid #0ea5e9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-8px); }
+  40%,80% { transform: translateX(8px); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-card {
+    width: 90%;
+    padding: 2rem;
+  }
+}
+@media (max-width: 480px) {
+  .login-card {
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  .logo {
+    width: 80px;
+    height: 80px;
+  }
+  .brand {
+    font-size: 1.5rem;
+  }
+  .input-group input {
+    padding: 12px 42px 12px 38px;
+  }
+  .btn-submit {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}

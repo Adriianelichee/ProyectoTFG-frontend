@@ -1,0 +1,67 @@
+<div class="login-wrapper">
+  <div class="login-card glass tilt-card">
+    <div class="logo-section">
+      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo" />
+      <h1 class="brand">CoWork Space</h1>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email -->
+      <div class="input-group">
+        <i class="fa fa-envelope icon"></i>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Correo electrónico"
+          autocomplete="email"
+        />
+      </div>
+      <div class="error" *ngIf="emailControl.invalid && emailControl.touched">
+        <small *ngIf="emailControl.hasError('required')">El email es obligatorio.</small>
+        <small *ngIf="emailControl.hasError('email')">Formato inválido.</small>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="input-group">
+        <i class="fa fa-lock icon"></i>
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Contraseña"
+          autocomplete="current-password"
+        />
+        <button type="button" class="toggle" (click)="showPassword = !showPassword">
+          <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+      <div class="error" *ngIf="passwordControl.invalid && passwordControl.touched">
+        <small>La contraseña es obligatoria.</small>
+      </div>
+
+      <!-- Opciones -->
+      <div class="options">
+        <label class="remember-me">
+          <input type="checkbox" />
+          <span class="checkmark"></span>
+          Recuérdame
+        </label>
+        <a routerLink="/auth/forgot-password" class="forgot">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Botón -->
+      <button class="btn-submit" type="submit" [disabled]="loginForm.invalid || loading">
+        <span *ngIf="!loading">Iniciar Sesión</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+      <!-- Registro -->
+      <p class="switch-link">
+        ¿No tienes cuenta?
+        <a routerLink="/auth/register">Regístrate</a>
+      </p>
+
+    </form>
+  </div>
+</div>

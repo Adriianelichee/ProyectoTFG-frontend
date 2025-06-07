@@ -1,0 +1,40 @@
+<!-- src/app/features/rooms/rooms-list.component.html -->
+<div class="rooms-list-container">
+  <h2>Listado de Salas</h2>
+  <button class="btn-create" (click)="onCreate()">+ Nueva Sala</button>
+
+  <div *ngIf="loading" class="loading">Cargando salas...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <table *ngIf="!loading && rooms.length > 0" class="rooms-table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Capacidad</th>
+      <th>Tarifa Hora</th>
+      <th>Disponible</th>
+      <th>Floor ID</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let r of rooms">
+      <td>{{ r.roomId }}</td>
+      <td>{{ r.roomName }}</td>
+      <td>{{ r.capacity }}</td>
+      <td>{{ r.hourlyRate }}</td>
+      <td>{{ r.available ? 'Sí' : 'No' }}</td>
+      <td>{{ r.floorId }}</td>
+      <td>
+        <button class="btn-edit" (click)="onEdit(r.roomId)">Editar</button>
+        <button class="btn-delete" (click)="onDelete(r.roomId)">Eliminar</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && rooms.length === 0" class="no-data">
+    No hay salas registradas.
+  </div>
+</div>

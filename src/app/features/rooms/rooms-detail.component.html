@@ -1,0 +1,58 @@
+<div class="rooms-detail-container">
+  <h2>{{ isEdit ? 'Editar Sala' : 'Nueva Sala' }}</h2>
+
+  <div *ngIf="loading" class="loading">Cargando datos...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <div class="form-group">
+      <label for="roomName">Nombre de la Sala</label>
+      <input id="roomName" formControlName="roomName" />
+      <div *ngIf="roomNameControl.invalid && roomNameControl.touched" class="validation-error">
+        <small *ngIf="roomNameControl.hasError('required')">El nombre es obligatorio.</small>
+        <small *ngIf="roomNameControl.hasError('maxLength')">Máx. 45 caracteres.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="capacity">Capacidad</label>
+      <input id="capacity" type="number" formControlName="capacity" />
+      <div *ngIf="capacityControl.invalid && capacityControl.touched" class="validation-error">
+        <small *ngIf="capacityControl.hasError('required')">La capacidad es obligatoria.</small>
+        <small *ngIf="capacityControl.hasError('min')">Debe ser al menos 1.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="hourlyRate">Tarifa por Hora</label>
+      <input id="hourlyRate" type="number" formControlName="hourlyRate" />
+      <div *ngIf="hourlyRateControl.invalid && hourlyRateControl.touched" class="validation-error">
+        <small *ngIf="hourlyRateControl.hasError('required')">La tarifa es obligatoria.</small>
+        <small *ngIf="hourlyRateControl.hasError('min')">No puede ser negativa.</small>
+      </div>
+    </div>
+
+    <div class="form-group-inline">
+      <label>
+        <input type="checkbox" formControlName="available" />
+        Disponible
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="floorId">Floor ID</label>
+      <input id="floorId" type="number" formControlName="floorId" />
+      <div *ngIf="floorIdControl.invalid && floorIdControl.touched" class="validation-error">
+        <small *ngIf="floorIdControl.hasError('required')">El Floor ID es obligatorio.</small>
+        <small *ngIf="floorIdControl.hasError('min')">Debe ser un ID válido (> 0).</small>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-save" type="submit" [disabled]="roomForm.invalid">
+        {{ isEdit ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button class="btn-cancel" type="button" (click)="onCancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

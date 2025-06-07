@@ -1,0 +1,70 @@
+/* src/app/features/companies/companies-detail.component.css */
+.companies-detail-container {
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.loading,
+.error {
+  text-align: center;
+  color: #b00;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-group input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.validation-error {
+  color: #d9534f;
+  margin-top: 4px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-save:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}

@@ -1,0 +1,76 @@
+<div class="companies-detail-container">
+  <h2>{{ isEdit ? 'Editar Empresa' : 'Nueva Empresa' }}</h2>
+
+  <div *ngIf="loading" class="loading">Cargando datos...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <div class="form-group">
+      <label for="companyName">Nombre de la Empresa</label>
+      <input id="companyName" formControlName="companyName" />
+      <div
+        *ngIf="companyNameControl.invalid && companyNameControl.touched"
+        class="validation-error"
+      >
+        <small *ngIf="companyNameControl.hasError('required')">
+          El nombre es obligatorio.
+        </small>
+        <small *ngIf="companyNameControl.hasError('maxLength')">
+          Máx. 45 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Dirección</label>
+      <input id="address" formControlName="address" />
+      <div *ngIf="addressControl.invalid && addressControl.touched" class="validation-error">
+        <small *ngIf="addressControl.hasError('required')">
+          La dirección es obligatoria.
+        </small>
+        <small *ngIf="addressControl.hasError('maxLength')">
+          Máx. 100 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Teléfono</label>
+      <input id="phone" formControlName="phone" />
+      <div *ngIf="phoneControl.invalid && phoneControl.touched" class="validation-error">
+        <small *ngIf="phoneControl.hasError('required')">
+          El teléfono es obligatorio.
+        </small>
+        <small *ngIf="phoneControl.hasError('maxLength')">
+          Máx. 20 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="contactEmail">Email de Contacto</label>
+      <input id="contactEmail" formControlName="contactEmail" />
+      <div
+        *ngIf="contactEmailControl.invalid && contactEmailControl.touched"
+        class="validation-error"
+      >
+        <small *ngIf="contactEmailControl.hasError('required')">
+          El email es obligatorio.
+        </small>
+        <small *ngIf="contactEmailControl.hasError('email')">
+          Email inválido.
+        </small>
+        <small *ngIf="contactEmailControl.hasError('maxLength')">
+          Máx. 100 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-save" type="submit" [disabled]="companyForm.invalid">
+        {{ isEdit ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button class="btn-cancel" type="button" (click)="onCancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

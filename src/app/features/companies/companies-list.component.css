@@ -1,0 +1,74 @@
+/* src/app/features/companies/companies-list.component.css */
+.companies-list-container {
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.btn-create {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.btn-create:hover {
+  background-color: #0056b3;
+}
+
+.loading,
+.error,
+.no-data {
+  text-align: center;
+  margin-top: 15px;
+  color: #b00;
+}
+
+.companies-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.companies-table th,
+.companies-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+}
+
+.companies-table th {
+  background-color: #f2f2f2;
+}
+
+.btn-edit,
+.btn-delete {
+  background-color: transparent;
+  border: 1px solid #007bff;
+  color: #007bff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+.btn-edit:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-delete {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.btn-delete:hover {
+  background-color: #dc3545;
+  color: white;
+}
