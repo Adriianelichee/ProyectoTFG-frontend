@@ -19,6 +19,10 @@ export class RoomService {
     return this.http.get<RoomOutDto>(`${this.baseUrl}/${id}`);
   }
 
+  getByFloorId(floorId: number): Observable<RoomOutDto[]> {
+    return this.http.get<RoomOutDto[]>(`${this.baseUrl}/floor/${floorId}`);
+  }
+
   create(dto: RoomInDto): Observable<RoomOutDto> {
     return this.http.post<RoomOutDto>(this.baseUrl, dto);
   }

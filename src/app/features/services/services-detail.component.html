@@ -1,0 +1,81 @@
+<div class="services-detail-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Editar Servicio' : 'Nuevo Servicio' }}</h2>
+      <div class="form-icon">
+        <i class="fas fa-concierge-bell"></i>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando datos...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="serviceName">Nombre del Servicio</label>
+        <div class="input-container">
+          <i class="fas fa-tag input-icon"></i>
+          <input id="serviceName" formControlName="serviceName" placeholder="Ej: Limpieza, Mantenimiento, Internet..."/>
+        </div>
+        <div *ngIf="serviceNameControl.invalid && serviceNameControl.touched" class="validation-error">
+          <small *ngIf="serviceNameControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> El nombre es obligatorio.
+          </small>
+          <small *ngIf="serviceNameControl.hasError('maxLength')">
+            <i class="fas fa-exclamation-triangle"></i> Máximo 100 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <div class="input-container textarea-container">
+          <i class="fas fa-align-left input-icon"></i>
+          <textarea id="description" formControlName="description" rows="4"
+                    placeholder="Describe detalladamente el servicio..."></textarea>
+        </div>
+        <div *ngIf="descriptionControl.invalid && descriptionControl.touched" class="validation-error">
+          <small *ngIf="descriptionControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> La descripción es obligatoria.
+          </small>
+          <small *ngIf="descriptionControl.hasError('maxLength')">
+            <i class="fas fa-exclamation-triangle"></i> Máximo 500 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Precio (€)</label>
+        <div class="input-container">
+          <i class="fas fa-euro-sign input-icon"></i>
+          <input id="price" type="number" formControlName="price" placeholder="Precio del servicio"/>
+        </div>
+        <div *ngIf="priceControl.invalid && priceControl.touched" class="validation-error">
+          <small *ngIf="priceControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> El precio es obligatorio.
+          </small>
+          <small *ngIf="priceControl.hasError('min')">
+            <i class="fas fa-exclamation-triangle"></i> El precio no puede ser negativo.
+          </small>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="btn-save" type="submit" [disabled]="serviceForm.invalid">
+          <i class="fas" [ngClass]="isEdit ? 'fa-save' : 'fa-plus-circle'"></i>
+          {{ isEdit ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

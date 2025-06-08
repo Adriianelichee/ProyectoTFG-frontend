@@ -1,58 +1,112 @@
 <div class="rooms-detail-container">
-  <h2>{{ isEdit ? 'Editar Sala' : 'Nueva Sala' }}</h2>
-
-  <div *ngIf="loading" class="loading">Cargando datos...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-
-  <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <div class="form-group">
-      <label for="roomName">Nombre de la Sala</label>
-      <input id="roomName" formControlName="roomName" />
-      <div *ngIf="roomNameControl.invalid && roomNameControl.touched" class="validation-error">
-        <small *ngIf="roomNameControl.hasError('required')">El nombre es obligatorio.</small>
-        <small *ngIf="roomNameControl.hasError('maxLength')">Máx. 45 caracteres.</small>
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Editar Sala' : 'Nueva Sala' }}</h2>
+      <div class="form-icon">
+        <i class="fas fa-door-open"></i>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="capacity">Capacidad</label>
-      <input id="capacity" type="number" formControlName="capacity" />
-      <div *ngIf="capacityControl.invalid && capacityControl.touched" class="validation-error">
-        <small *ngIf="capacityControl.hasError('required')">La capacidad es obligatoria.</small>
-        <small *ngIf="capacityControl.hasError('min')">Debe ser al menos 1.</small>
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando datos...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="roomName">Nombre de la Sala</label>
+        <div class="input-container">
+          <i class="fas fa-tag input-icon"></i>
+          <input id="roomName" formControlName="roomName" placeholder="Ej: Sala de juntas, Sala de conferencias..."/>
+        </div>
+        <div *ngIf="roomNameControl.invalid && roomNameControl.touched" class="validation-error">
+          <small *ngIf="roomNameControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> El nombre es obligatorio.
+          </small>
+          <small *ngIf="roomNameControl.hasError('maxLength')">
+            <i class="fas fa-exclamation-triangle"></i> Máximo 45 caracteres.
+          </small>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="hourlyRate">Tarifa por Hora</label>
-      <input id="hourlyRate" type="number" formControlName="hourlyRate" />
-      <div *ngIf="hourlyRateControl.invalid && hourlyRateControl.touched" class="validation-error">
-        <small *ngIf="hourlyRateControl.hasError('required')">La tarifa es obligatoria.</small>
-        <small *ngIf="hourlyRateControl.hasError('min')">No puede ser negativa.</small>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="capacity">Capacidad</label>
+          <div class="input-container">
+            <i class="fas fa-users input-icon"></i>
+            <input id="capacity" type="number" formControlName="capacity" placeholder="Personas"/>
+          </div>
+          <div *ngIf="capacityControl.invalid && capacityControl.touched" class="validation-error">
+            <small *ngIf="capacityControl.hasError('required')">
+              <i class="fas fa-exclamation-triangle"></i> La capacidad es obligatoria.
+            </small>
+            <small *ngIf="capacityControl.hasError('min')">
+              <i class="fas fa-exclamation-triangle"></i> Debe ser al menos 1.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="hourlyRate">Tarifa por Hora</label>
+          <div class="input-container">
+            <i class="fas fa-euro-sign input-icon"></i>
+            <input id="hourlyRate" type="number" formControlName="hourlyRate" placeholder="€/hora"/>
+          </div>
+          <div *ngIf="hourlyRateControl.invalid && hourlyRateControl.touched" class="validation-error">
+            <small *ngIf="hourlyRateControl.hasError('required')">
+              <i class="fas fa-exclamation-triangle"></i> La tarifa es obligatoria.
+            </small>
+            <small *ngIf="hourlyRateControl.hasError('min')">
+              <i class="fas fa-exclamation-triangle"></i> No puede ser negativa.
+            </small>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group-inline">
-      <label>
-        <input type="checkbox" formControlName="available" />
-        Disponible
-      </label>
-    </div>
-
-    <div class="form-group">
-      <label for="floorId">Floor ID</label>
-      <input id="floorId" type="number" formControlName="floorId" />
-      <div *ngIf="floorIdControl.invalid && floorIdControl.touched" class="validation-error">
-        <small *ngIf="floorIdControl.hasError('required')">El Floor ID es obligatorio.</small>
-        <small *ngIf="floorIdControl.hasError('min')">Debe ser un ID válido (> 0).</small>
+      <div class="form-group">
+        <label for="floorId">Planta</label>
+        <div class="input-container">
+          <i class="fas fa-building input-icon"></i>
+          <select id="floorId" formControlName="floorId" class="select-input">
+            <option [ngValue]="null" disabled>Selecciona una planta</option>
+            <option *ngFor="let floor of floors" [value]="floor.floorId">
+              {{ floor.floorName }}
+            </option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div *ngIf="loadingFloors" class="loading-floors">
+          <i class="fas fa-spinner"></i> Cargando plantas...
+        </div>
+        <div *ngIf="floorIdControl.invalid && floorIdControl.touched" class="validation-error">
+          <small *ngIf="floorIdControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> Debes seleccionar una planta.
+          </small>
+        </div>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn-save" type="submit" [disabled]="roomForm.invalid">
-        {{ isEdit ? 'Actualizar' : 'Crear' }}
-      </button>
-      <button class="btn-cancel" type="button" (click)="onCancel()">Cancelar</button>
-    </div>
-  </form>
+      <div class="form-group-checkbox">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="available"/>
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Disponible para reservas</span>
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="btn-save" type="submit" [disabled]="roomForm.invalid">
+          <i class="fas" [ngClass]="isEdit ? 'fa-save' : 'fa-plus-circle'"></i>
+          {{ isEdit ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

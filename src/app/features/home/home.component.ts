@@ -4,8 +4,12 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { FloorService } from '../../core/api/floor.service';
 import { RoomService } from '../../core/api/room.service';
+import { WorkstationService } from '../../core/api/workstation.service';
+import { ServiceService } from '../../core/api/service.service';
 import { FloorOutDto } from '../../core/models/floor-out-dto';
 import { RoomOutDto } from '../../core/models/room-out-dto';
+import { WorkstationOutDto } from '../../core/models/workstation-out-dto';
+import { ServiceOutDto } from '../../core/models/service-out-dto';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +21,12 @@ import { RoomOutDto } from '../../core/models/room-out-dto';
 export class HomeComponent implements OnInit {
   isLoggedIn = false;
   featuredRooms: RoomOutDto[] = [];
+  featuredWorkstations: WorkstationOutDto[] = [];
+  featuredServices: ServiceOutDto[] = [];
   floors: FloorOutDto[] = [];
+
+  activeTabIndex: number = 0;
+
   testimonials = [
     {
       name: 'María García',
@@ -75,13 +84,27 @@ export class HomeComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private floorService: FloorService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private workstationService: WorkstationService,
+    private serviceService: ServiceService
   ) {}
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
     this.loadFeaturedRooms();
+    this.loadFeaturedWorkstations();
+    this.loadFeaturedServices();
     this.loadFloors();
+  }
+
+  // Método para cambiar entre tabs
+  setActiveTab(index: number): void {
+    this.activeTabIndex = index;
+  }
+
+  // Método para determinar si un tab está activo
+  isActiveTab(index: number): boolean {
+    return this.activeTabIndex === index;
   }
 
   loadFeaturedRooms(): void {
@@ -93,6 +116,29 @@ export class HomeComponent implements OnInit {
           .slice(0, 3);
       },
       error: (err) => console.error('Error al cargar salas destacadas:', err)
+    });
+  }
+
+  loadFeaturedWorkstations(): void {
+    this.workstationService.getAll().subscribe({
+      next: (workstations) => {
+        this.featuredWorkstations = workstations
+          .filter(ws => ws.available)
+          .sort((a, b) => b.hourlyRate - a.hourlyRate)
+          .slice(0, 3);
+      },
+      error: (err) => console.error('Error al cargar puestos de trabajo destacados:', err)
+    });
+  }
+
+  loadFeaturedServices(): void {
+    this.serviceService.getAll().subscribe({
+      next: (services) => {
+        this.featuredServices = services
+          .sort((a, b) => b.price - a.price)
+          .slice(0, 3);
+      },
+      error: (err) => console.error('Error al cargar servicios destacados:', err)
     });
   }
 

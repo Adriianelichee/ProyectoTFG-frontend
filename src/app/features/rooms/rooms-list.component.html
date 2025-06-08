@@ -1,40 +1,87 @@
-<!-- src/app/features/rooms/rooms-list.component.html -->
 <div class="rooms-list-container">
-  <h2>Listado de Salas</h2>
-  <button class="btn-create" (click)="onCreate()">+ Nueva Sala</button>
+  <div class="rooms-header">
+    <div class="title-section">
+      <h2>Gestión de Salas</h2>
+      <p class="rooms-count">{{ rooms.length }} salas encontradas</p>
+    </div>
 
-  <div *ngIf="loading" class="loading">Cargando salas...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    <div class="actions-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Buscar sala..."
+          [(ngModel)]="searchTerm"
+          (input)="filterRooms()"
+          class="search-input">
+      </div>
 
-  <table *ngIf="!loading && rooms.length > 0" class="rooms-table">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Capacidad</th>
-      <th>Tarifa Hora</th>
-      <th>Disponible</th>
-      <th>Floor ID</th>
-      <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let r of rooms">
-      <td>{{ r.roomId }}</td>
-      <td>{{ r.roomName }}</td>
-      <td>{{ r.capacity }}</td>
-      <td>{{ r.hourlyRate }}</td>
-      <td>{{ r.available ? 'Sí' : 'No' }}</td>
-      <td>{{ r.floorId }}</td>
-      <td>
-        <button class="btn-edit" (click)="onEdit(r.roomId)">Editar</button>
-        <button class="btn-delete" (click)="onDelete(r.roomId)">Eliminar</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+      <button class="btn-create" (click)="onCreate()">
+        <i class="fas fa-plus"></i> Nueva Sala
+      </button>
+    </div>
+  </div>
 
-  <div *ngIf="!loading && rooms.length === 0" class="no-data">
-    No hay salas registradas.
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando salas...</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadRooms()">Reintentar</button>
+  </div>
+
+  <div class="rooms-grid" *ngIf="!loading && filteredRooms.length > 0">
+    <div class="room-card" *ngFor="let room of filteredRooms">
+      <div class="room-status" [class.available]="room.available">
+        {{ room.available ? 'Disponible' : 'No disponible' }}
+      </div>
+
+      <div class="room-header">
+        <h3>{{ room.roomName }}</h3>
+        <span class="room-id">#{{ room.roomId }}</span>
+      </div>
+
+      <div class="room-details">
+        <div class="detail-item">
+          <i class="fas fa-users"></i>
+          <span>{{ room.capacity }} personas</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-euro-sign"></i>
+          <span>{{ room.hourlyRate }}€/hora</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-building"></i>
+          <span>Planta {{ room.floorId }}</span>
+        </div>
+      </div>
+
+      <div class="room-actions">
+        <button class="btn-view" (click)="onView(room.roomId)">
+          <i class="fas fa-eye"></i> Ver
+        </button>
+        <button class="btn-edit" (click)="onEdit(room.roomId)">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-delete" (click)="onDelete(room.roomId)">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredRooms.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-door-closed"></i>
+    </div>
+    <h3>No hay salas disponibles</h3>
+    <p *ngIf="searchTerm">No se encontraron salas con "{{ searchTerm }}"</p>
+    <p *ngIf="!searchTerm">Crea una nueva sala para empezar a gestionarlas</p>
+    <button class="btn-create-empty" (click)="onCreate()">
+      <i class="fas fa-plus"></i> Crear Nueva Sala
+    </button>
   </div>
 </div>

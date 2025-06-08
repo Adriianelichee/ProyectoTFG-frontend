@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+/* Reset de márgenes y padding */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f3f3f3;
+  color: #f8fafc;
+}

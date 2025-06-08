@@ -30,4 +30,8 @@ export class FloorService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  getByCompanyId(companyId: number): Observable<FloorOutDto[]> {
+    return this.http.get<FloorOutDto[]>(`${this.baseUrl}/company/${companyId}`);
+  }
+
 }

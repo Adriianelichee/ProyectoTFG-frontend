@@ -1,0 +1,141 @@
+<div class="floor-view-container">
+  <div class="back-button" (click)="goBack()">
+    <i class="fas fa-arrow-left"></i> Volver a la lista
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando información de la planta...</span>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+      <button class="btn-retry" (click)="loadFloorDetails()">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading && floor) {
+    <div class="floor-card">
+      <div class="floor-header">
+        <h1>{{ floor.floorName }}</h1>
+        <div class="floor-status" [class.available]="hasAvailableSpaces">
+          {{ hasAvailableSpaces ? 'Espacios Disponibles' : 'Completo' }}
+        </div>
+      </div>
+
+      <div class="floor-description">
+        <h3>Descripción</h3>
+        <p>{{ floor.description }}</p>
+      </div>
+
+      <div class="stats-container">
+        <div class="stats-card">
+          <div class="stats-icon">
+            <i class="fas fa-door-open"></i>
+          </div>
+          <div class="stats-info">
+            <span class="stats-title">Salas de Reunión</span>
+            <div class="stats-numbers">
+              <span class="stats-primary">{{ availableRooms }}</span>
+              <span class="stats-secondary">/ {{ totalRooms }} disponibles</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <div class="stats-icon">
+            <i class="fas fa-desktop"></i>
+          </div>
+          <div class="stats-info">
+            <span class="stats-title">Puestos de Trabajo</span>
+            <div class="stats-numbers">
+              <span class="stats-primary">{{ availableWorkstations }}</span>
+              <span class="stats-secondary">/ {{ totalWorkstations }} disponibles</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestañas para diferentes tipos de espacios -->
+      <div class="spaces-tabs">
+        <div class="tab" [class.active]="activeTab === 'rooms'" (click)="activeTab = 'rooms'">
+          <i class="fas fa-door-open"></i> Salas de Reunión
+        </div>
+        <div class="tab" [class.active]="activeTab === 'workstations'" (click)="activeTab = 'workstations'">
+          <i class="fas fa-desktop"></i> Puestos de Trabajo
+        </div>
+      </div>
+
+      <!-- Contenido de las pestañas -->
+      @if (activeTab === 'rooms' && rooms.length) {
+        <div class="spaces-grid">
+          @for (room of rooms; track room.roomId) {
+            <div class="space-card" [class.unavailable]="!room.available">
+              <div class="space-status">
+                <span [class.available]="room.available">{{ room.available ? 'Disponible' : 'Ocupado' }}</span>
+              </div>
+              <h3>{{ room.roomName }}</h3>
+              <div class="space-details">
+                <div class="detail-item">
+                  <i class="fas fa-users"></i>
+                  <span>{{ room.capacity }} personas</span>
+                </div>
+              </div>
+              <div class="price">{{ room.hourlyRate | currency:'EUR':'symbol':'1.0-0' }} / hora</div>
+              @if (room.available) {
+                <button class="btn-reserve" (click)="reserveSpace('room', room.roomId)">
+                  Reservar Sala
+                </button>
+              } @else {
+                <div class="unavailable-message">Actualmente no disponible</div>
+              }
+            </div>
+          }
+        </div>
+      } @else if (activeTab === 'rooms') {
+        <div class="no-spaces">
+          No hay salas de reunión en esta planta
+        </div>
+      }
+
+      @if (activeTab === 'workstations' && workstations.length) {
+        <div class="spaces-grid">
+          @for (workstation of workstations; track workstation.workstationId) {
+            <div class="space-card" [class.unavailable]="!workstation.available">
+              <div class="space-status">
+                <span [class.available]="workstation.available">{{ workstation.available ? 'Disponible' : 'Ocupado' }}</span>
+              </div>
+              <h3>Estación {{ workstation.workstationId }}</h3>
+              <div class="space-details">
+                <div class="detail-item">
+                  <i class="fas fa-desktop"></i>
+                  <span>Puesto de trabajo</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Posición {{ workstation.workstationId }}</span>
+                </div>
+              </div>
+              <div class="price">{{ workstation.hourlyRate | currency:'EUR':'symbol':'1.0-0' }} / hora</div>
+              @if (workstation.available) {
+                <button class="btn-reserve" (click)="reserveSpace('workstation', workstation.workstationId)">
+                  Reservar Puesto
+                </button>
+              } @else {
+                <div class="unavailable-message">Actualmente no disponible</div>
+              }
+            </div>
+          }
+        </div>
+      } @else if (activeTab === 'workstations') {
+        <div class="no-spaces">
+          No hay puestos de trabajo en esta planta
+        </div>
+      }
+    </div>
+  }
+</div>

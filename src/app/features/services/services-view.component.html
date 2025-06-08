@@ -1,0 +1,61 @@
+<!-- services-view.component.html -->
+<div class="service-view-container">
+  <div class="service-card">
+    <div class="service-header">
+      <h2>Detalles del Servicio</h2>
+      <div class="service-icon">
+        <i class="fas fa-concierge-bell"></i>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando información del servicio...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <div *ngIf="service && !loading" class="service-content">
+      <div class="service-title">
+        <h3>{{ service.serviceName }}</h3>
+      </div>
+
+      <div class="service-info">
+        <div class="info-item">
+          <div class="info-label">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Precio:</span>
+          </div>
+          <div class="info-value price">{{ service.price | currency:'EUR':'symbol':'1.2-2' }}</div>
+        </div>
+      </div>
+
+      <div class="service-description-box">
+        <h4>Descripción</h4>
+        <p>{{ service.description }}</p>
+      </div>
+
+      <div class="service-benefits">
+        <h4>Beneficios del servicio</h4>
+        <ul>
+          <li><i class="fas fa-check"></i> Soporte técnico especializado</li>
+          <li><i class="fas fa-check"></i> Acceso a todas las funcionalidades</li>
+          <li><i class="fas fa-check"></i> Actualizaciones periódicas</li>
+          <li><i class="fas fa-check"></i> Garantía de satisfacción</li>
+        </ul>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-back" type="button" (click)="onBack()">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+        <button *ngIf="isClient" class="btn-contract" (click)="onContractService()">
+          <i class="fas fa-handshake"></i> Contratar Servicio
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

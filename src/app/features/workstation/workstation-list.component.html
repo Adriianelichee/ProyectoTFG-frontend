@@ -1,0 +1,87 @@
+<div class="workstation-list-container">
+  <div class="workstation-header">
+    <div class="title-section">
+      <h2>Gestión de Estaciones de Trabajo</h2>
+      <p class="workstation-count">{{ workstations.length }} estaciones encontradas</p>
+    </div>
+
+    <div class="actions-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Buscar estación..."
+          [(ngModel)]="searchTerm"
+          (input)="filterWorkstations()"
+          class="search-input">
+      </div>
+
+      <button class="btn-create" (click)="onCreate()">
+        <i class="fas fa-plus"></i> Nueva Estación
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando estaciones de trabajo...</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadWorkstations()">Reintentar</button>
+  </div>
+
+  <div class="workstation-grid" *ngIf="!loading && filteredWorkstations.length > 0">
+    <div class="workstation-card" *ngFor="let workstation of filteredWorkstations">
+      <div class="workstation-status" [class.available]="workstation.available">
+        {{ workstation.available ? 'Disponible' : 'No disponible' }}
+      </div>
+
+      <div class="workstation-header">
+        <h3>Estación {{ workstation.workstationId }}</h3>
+        <span class="workstation-id">#{{ workstation.workstationId }}</span>
+      </div>
+
+      <div class="workstation-details">
+        <div class="detail-item">
+          <i class="fas fa-desktop"></i>
+          <span>Puesto de trabajo</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-euro-sign"></i>
+          <span>{{ workstation.hourlyRate }}€/hora</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-building"></i>
+          <span>Planta {{ workstation.floorId }}</span>
+        </div>
+      </div>
+
+      <div class="workstation-actions">
+        <button class="btn-view" (click)="onView(workstation.workstationId)">
+          <i class="fas fa-eye"></i> Ver
+        </button>
+        <button class="btn-edit" (click)="onEdit(workstation.workstationId)">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-delete" (click)="onDelete(workstation.workstationId)">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredWorkstations.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-desktop"></i>
+    </div>
+    <h3>No hay estaciones de trabajo disponibles</h3>
+    <p *ngIf="searchTerm">No se encontraron estaciones con "{{ searchTerm }}"</p>
+    <p *ngIf="!searchTerm">Crea una nueva estación de trabajo para empezar a gestionarlas</p>
+    <button class="btn-create-empty" (click)="onCreate()">
+      <i class="fas fa-plus"></i> Crear Nueva Estación
+    </button>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="workstation-detail-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Editar Estación de Trabajo' : 'Nueva Estación de Trabajo' }}</h2>
+      <div class="form-icon">
+        <i class="fas fa-desktop"></i>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando datos...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="workstationForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="workstationName">Nombre de la Estación</label>
+        <div class="input-container">
+          <i class="fas fa-tag input-icon"></i>
+          <input id="workstationName" formControlName="workstationName"
+                 [placeholder]="isEdit ? 'Se mostrará automáticamente' : 'Ej: Estación 1, Puesto trabajo A...'"/>
+        </div>
+        <div *ngIf="workstationNameControl.invalid && workstationNameControl.touched" class="validation-error">
+          <small *ngIf="workstationNameControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> El nombre es obligatorio.
+          </small>
+          <small *ngIf="workstationNameControl.hasError('maxLength')">
+            <i class="fas fa-exclamation-triangle"></i> Máximo 45 caracteres.
+          </small>
+        </div>
+        <small *ngIf="isEdit" style="color: #777; font-style: italic; display: block; margin-top: 5px;">
+          <i class="fas fa-info-circle"></i> El nombre se genera automáticamente basado en el ID
+        </small>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hourlyRate">Tarifa por Hora</label>
+          <div class="input-container">
+            <i class="fas fa-euro-sign input-icon"></i>
+            <input id="hourlyRate" type="number" formControlName="hourlyRate" placeholder="€/hora"/>
+          </div>
+          <div *ngIf="hourlyRateControl.invalid && hourlyRateControl.touched" class="validation-error">
+            <small *ngIf="hourlyRateControl.hasError('required')">
+              <i class="fas fa-exclamation-triangle"></i> La tarifa es obligatoria.
+            </small>
+            <small *ngIf="hourlyRateControl.hasError('min')">
+              <i class="fas fa-exclamation-triangle"></i> No puede ser negativa.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="position">Posición</label>
+          <div class="input-container">
+            <i class="fas fa-map-marker-alt input-icon"></i>
+            <input id="position" formControlName="position"
+                   [placeholder]="isEdit ? 'Se mostrará automáticamente' : 'Ej: Zona A, Esquina norte...'"/>
+          </div>
+          <div *ngIf="positionControl.invalid && positionControl.touched" class="validation-error">
+            <small *ngIf="positionControl.hasError('required')">
+              <i class="fas fa-exclamation-triangle"></i> La posición es obligatoria.
+            </small>
+          </div>
+          <small *ngIf="isEdit" style="color: #777; font-style: italic; display: block; margin-top: 5px;">
+            <i class="fas fa-info-circle"></i> La posición se genera automáticamente basada en el ID
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="floorId">Planta</label>
+        <div class="input-container">
+          <i class="fas fa-building input-icon"></i>
+          <select id="floorId" formControlName="floorId" class="select-input">
+            <option [ngValue]="null" disabled>Selecciona una planta</option>
+            <option *ngFor="let floor of floors" [value]="floor.floorId">
+              {{ floor.floorName }}
+            </option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div *ngIf="loadingFloors" class="loading-floors">
+          <i class="fas fa-spinner"></i> Cargando plantas...
+        </div>
+        <div *ngIf="floorIdControl.invalid && floorIdControl.touched" class="validation-error">
+          <small *ngIf="floorIdControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> Debes seleccionar una planta.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group-checkbox">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="available"/>
+          <span class="checkmark"></span>
+          <span class="checkbox-label">Disponible para reservas</span>
+        </label>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="btn-save" type="submit" [disabled]="workstationForm.invalid">
+          <i class="fas" [ngClass]="isEdit ? 'fa-save' : 'fa-plus-circle'"></i>
+          {{ isEdit ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

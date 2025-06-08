@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../auth.service';
@@ -8,8 +8,6 @@ import {CompanyOutDto} from '../../models/company-out-dto';
 import {ReportProviderService} from '../../api/report-provider.service';
 import {ReportProviderOutDto} from '../../models/report-provider-out-dto';
 
-
-
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -17,14 +15,14 @@ import {ReportProviderOutDto} from '../../models/report-provider-out-dto';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
   showPassword = false;
   companies: CompanyOutDto[] = [];
   providers: ReportProviderOutDto[] = [];
-
+  registrationSuccess = false;
 
   roles = [
     {value: 'client', label: 'Cliente'},
@@ -39,7 +37,6 @@ export class RegisterComponent {
     private router: Router,
     private companyService: CompanyService,
     private providerService: ReportProviderService
-
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(45)]],
@@ -54,12 +51,22 @@ export class RegisterComponent {
   }
 
   ngOnInit(): void {
+    this.checkAdminAccess();
     this.loadCompanies();
     this.loadProviders();
 
     this.roleControl.valueChanges.subscribe(role => {
       this.updateFormBasedOnRole(role);
     });
+  }
+
+  // Verificar que solo los administradores puedan acceder
+  checkAdminAccess(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || currentUser.role !== 'admin') {
+      this.router.navigate(['/home']);
+      this.errorMessage = 'Solo los administradores pueden registrar nuevos usuarios';
+    }
   }
 
   updateFormBasedOnRole(role: string): void {
@@ -122,7 +129,7 @@ export class RegisterComponent {
     this.loading = true;
     this.errorMessage = null;
 
-    const userData = { ...this.registerForm.value };
+    const userData = {...this.registerForm.value};
 
     if (userData.companyId) {
       userData.companyId = Number(userData.companyId);
@@ -144,11 +151,12 @@ export class RegisterComponent {
       delete userData.companyId;
     }
 
-
     this.authService.register(userData).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/auth/login']);
+        this.registrationSuccess = true;
+        this.resetForm();
+        // No redirigimos al login para mantener la sesión actual
       },
       error: (err: any) => {
         console.error('Error al registrarse:', err);
@@ -156,6 +164,14 @@ export class RegisterComponent {
         this.loading = false;
       },
     });
+  }
+
+  resetForm(): void {
+    this.registerForm.reset();
+    // Establecer valores predeterminados después del registro exitoso
+    setTimeout(() => {
+      this.registrationSuccess = false;
+    }, 3000);
   }
 
   get firstNameControl() {
@@ -189,6 +205,7 @@ export class RegisterComponent {
   get providerIdControl() {
     return this.registerForm.get('providerId')!;
   }
+
   shouldShowCompanySelector(): boolean {
     return this.roleControl.value === 'client';
   }

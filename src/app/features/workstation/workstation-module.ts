@@ -7,7 +7,6 @@ import { WorkstationRoutingModule } from './workstation-routing-module';
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
     WorkstationRoutingModule
   ]
 })

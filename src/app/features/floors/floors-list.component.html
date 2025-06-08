@@ -1,44 +1,79 @@
 <div class="floors-list-container">
-  <h2>Listado de Pisos</h2>
-  <button class="btn-create" (click)="onCreate()">+ Nuevo Piso</button>
+          <h2>Plantas del Edificio</h2>
 
-  @if (loading) {
-    <div class="loading">Cargando pisos...</div>
-  }
+          @if (isAdmin) {
+            <button class="btn-create" (click)="onCreate()">+ Nueva Planta</button>
+          }
 
-  @if (errorMessage) {
-    <div class="error">{{ errorMessage }}</div>
-  }
+          @if (loading) {
+            <div class="loading">Cargando plantas...</div>
+          }
 
-  @if (!loading && floors.length > 0) {
-    <table class="floors-table">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Acciones</th>
-      </tr>
-      </thead>
-      <tbody>
-        @for (f of floors; track f.floorId) {
-          <tr>
-            <td>{{ f.floorId }}</td>
-            <td>{{ f.floorName }}</td>
-            <td>{{ f.description }}</td>
-            <td>
-              <button class="btn-edit" (click)="onEdit(f.floorId)">Editar</button>
-              <button class="btn-delete" (click)="onDelete(f.floorId)">Eliminar</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  }
+          @if (errorMessage) {
+            <div class="error">{{ errorMessage }}</div>
+          }
 
-  @if (!loading && floors.length === 0) {
-    <div class="no-data">
-      No hay pisos registrados.
-    </div>
-  }
-</div>
+          <!-- Filtros de búsqueda -->
+          <div class="filters">
+            <div class="search-box">
+              <input
+                type="text"
+                placeholder="Buscar por nombre o descripción..."
+                [(ngModel)]="searchTerm"
+                (input)="filterFloors()">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="filter-options">
+              <select [(ngModel)]="availabilityFilter" (change)="filterFloors()">
+                <option value="all">Todas las disponibilidades</option>
+                <option value="available">Con espacios disponibles</option>
+                <option value="full">Completo</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Vista de tarjetas de Plantas -->
+          @if (!loading && filteredFloors.length > 0) {
+            <div class="floors-grid">
+              @for (floor of filteredFloors; track floor.floorId) {
+                <div class="floor-card" (click)="viewFloorDetails(floor.floorId)">
+                  <div class="floor-image">
+                    <div class="floor-status" [class.available]="floorAvailability[floor.floorId]?.hasAvailableSpaces">
+                      {{ floorAvailability[floor.floorId]?.hasAvailableSpaces ? 'Espacios Disponibles' : 'Completo' }}
+                    </div>
+                  </div>
+                  <div class="floor-content">
+                    <h3>{{ floor.floorName }}</h3>
+                    <p class="floor-description">{{ floor.description }}</p>
+                    <div class="floor-stats">
+                      <div class="stat">
+                        <i class="fas fa-door-open"></i>
+                        <span>{{ floorAvailability[floor.floorId]?.rooms || 0 }} salas</span>
+                      </div>
+                      <div class="stat">
+                        <i class="fas fa-desktop"></i>
+                        <span>{{ floorAvailability[floor.floorId]?.workstations || 0 }} puestos</span>
+                      </div>
+                    </div>
+                    <button class="btn-view" (click)="viewFloorDetails(floor.floorId)">Ver detalles</button>                  </div>
+                  @if (isAdmin) {
+                    <div class="admin-actions">
+                      <button class="btn-edit" (click)="onEdit(floor.floorId); $event.stopPropagation()">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn-delete" (click)="onDelete(floor.floorId); $event.stopPropagation()">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          @if (!loading && filteredFloors.length === 0) {
+            <div class="no-data">
+              No se encontraron plantas que coincidan con tu búsqueda.
+            </div>
+          }
+        </div>

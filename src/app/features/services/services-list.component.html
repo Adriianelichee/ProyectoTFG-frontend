@@ -1,0 +1,77 @@
+<div class="services-list-container">
+  <div class="services-header">
+    <div class="title-section">
+      <h2>Gestión de Servicios</h2>
+      <p class="services-count">{{ services.length }} servicios encontrados</p>
+    </div>
+
+    <div class="actions-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Buscar servicio..."
+          [(ngModel)]="searchTerm"
+          (input)="filterServices()"
+          class="search-input">
+      </div>
+
+      <button class="btn-create" (click)="onCreate()">
+        <i class="fas fa-plus"></i> Nuevo Servicio
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando servicios...</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadServices()">Reintentar</button>
+  </div>
+
+  <div class="services-grid" *ngIf="!loading && filteredServices.length > 0">
+    <div class="service-card" *ngFor="let service of filteredServices">
+      <div class="service-header">
+        <h3>{{ service.serviceName }}</h3>
+        <span class="service-id">#{{ service.serviceId }}</span>
+      </div>
+
+      <div class="service-description">
+        <p>{{ service.description }}</p>
+      </div>
+
+      <div class="service-price">
+        <i class="fas fa-tag"></i>
+        <span class="price-value">{{ service.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+      </div>
+
+      <div class="service-actions">
+        <button class="btn-view" (click)="onView(service.serviceId)">
+          <i class="fas fa-eye"></i> Ver
+        </button>
+        <button class="btn-edit" (click)="onEdit(service.serviceId)">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        <button class="btn-delete" (click)="onDelete(service.serviceId)">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredServices.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-concierge-bell"></i>
+    </div>
+    <h3>No hay servicios disponibles</h3>
+    <p *ngIf="searchTerm">No se encontraron servicios con "{{ searchTerm }}"</p>
+    <p *ngIf="!searchTerm">Crea un nuevo servicio para empezar a gestionarlos</p>
+    <button class="btn-create-empty" (click)="onCreate()">
+      <i class="fas fa-plus"></i> Crear Nuevo Servicio
+    </button>
+  </div>
+</div>

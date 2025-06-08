@@ -8,11 +8,7 @@ import { RoomsDetailComponent } from './rooms-detail.component';
 
 @NgModule({
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
     RoomsRoutingModule,
-    RoomsListComponent,
-    RoomsDetailComponent
   ]
 })
 export class RoomsModule {}

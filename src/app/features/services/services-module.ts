@@ -7,7 +7,6 @@ import { ServicesRoutingModule } from './services-routing-module';
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
     ServicesRoutingModule
   ]
 })

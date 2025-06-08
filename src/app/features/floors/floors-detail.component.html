@@ -1,44 +1,131 @@
 <div class="floors-detail-container">
-  <h2>{{ isEdit ? 'Editar Piso' : 'Nuevo Piso' }}</h2>
-
-  <div *ngIf="loading" class="loading">Cargando datos...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-
-  <form [formGroup]="floorForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <div class="form-group">
-      <label for="floorName">Nombre del Piso</label>
-      <input id="floorName" formControlName="floorName" />
-      <div
-        *ngIf="floorNameControl.invalid && floorNameControl.touched"
-        class="validation-error"
-      >
-        <small *ngIf="floorNameControl.hasError('required')">
-          El nombre es obligatorio.
-        </small>
-        <small *ngIf="floorNameControl.hasError('maxLength')">
-          Máximo 45 caracteres.
-        </small>
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Editar Planta' : 'Nuevo Planta' }}</h2>
+      <div class="form-icon">
+        <i class="fas fa-building"></i>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="description">Descripción</label>
-      <textarea id="description" formControlName="description"></textarea>
-      <div
-        *ngIf="descriptionControl.invalid && descriptionControl.touched"
-        class="validation-error"
-      >
-        <small>La descripción es obligatoria.</small>
-      </div>
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando datos...</span>
     </div>
 
-    <div class="buttons">
-      <button class="btn-save" type="submit" [disabled]="floorForm.invalid">
-        {{ isEdit ? 'Actualizar' : 'Crear' }}
-      </button>
-      <button class="btn-cancel" type="button" (click)="onCancel()">
-        Cancelar
-      </button>
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
     </div>
-  </form>
+
+    <form [formGroup]="floorForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="floorName">Nombre del Planta</label>
+        <div class="input-container">
+          <i class="fas fa-tag input-icon"></i>
+          <input id="floorName" formControlName="floorName" placeholder="Ej: Planta Baja, Primer Planta..."/>
+        </div>
+        <div
+          *ngIf="floorNameControl.invalid && floorNameControl.touched"
+          class="validation-error"
+        >
+          <small *ngIf="floorNameControl.hasError('required')">
+            <i class="fas fa-exclamation-triangle"></i> El nombre es obligatorio.
+          </small>
+          <small *ngIf="floorNameControl.hasError('maxLength')">
+            <i class="fas fa-exclamation-triangle"></i> Máximo 45 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <div class="input-container textarea-container">
+          <i class="fas fa-align-left input-icon"></i>
+          <textarea id="description" formControlName="description"
+                    placeholder="Describe las características de este Planta..."></textarea>
+        </div>
+        <div
+          *ngIf="descriptionControl.invalid && descriptionControl.touched"
+          class="validation-error"
+        >
+          <small>
+            <i class="fas fa-exclamation-triangle"></i> La descripción es obligatoria.
+          </small>
+        </div>
+      </div>
+
+      <!-- Sección de salas -->
+      <div class="spaces-section">
+        <div class="section-header">
+          <h3>Salas de Reunión</h3>
+          <button type="button" class="btn-add-space" (click)="navigateToCreateRoom()">
+            <i class="fas fa-plus"></i> Nueva Sala
+          </button>
+        </div>
+
+        <div *ngIf="loadingRooms" class="loading-spaces">
+          <div class="mini-spinner"></div>
+          <span>Cargando salas...</span>
+        </div>
+
+        <div *ngIf="!loadingRooms && availableRooms.length === 0" class="no-spaces">
+          No hay salas disponibles. <a (click)="navigateToCreateRoom()">Crear una nueva sala</a>
+        </div>
+
+        <div *ngIf="!loadingRooms && availableRooms.length > 0" class="spaces-grid" formArrayName="rooms">
+          <div *ngFor="let room of availableRooms; let i = index" class="space-checkbox">
+            <label>
+              <input type="checkbox" [formControlName]="i" [value]="room.roomId"/>
+              <div class="checkbox-content">
+                <span class="space-name">{{ room.roomName }}</span>
+                <span class="space-capacity"><i class="fas fa-users"></i> {{ room.capacity }} personas</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de puestos de trabajo -->
+      <div class="spaces-section">
+        <div class="section-header">
+          <h3>Puestos de Trabajo</h3>
+          <button type="button" class="btn-add-space" (click)="navigateToCreateWorkstation()">
+            <i class="fas fa-plus"></i> Nuevo Puesto
+          </button>
+        </div>
+
+        <div *ngIf="loadingWorkstations" class="loading-spaces">
+          <div class="mini-spinner"></div>
+          <span>Cargando puestos de trabajo...</span>
+        </div>
+
+        <div *ngIf="!loadingWorkstations && availableWorkstations.length === 0" class="no-spaces">
+          No hay puestos disponibles. <a (click)="navigateToCreateWorkstation()">Crear nuevo puesto</a>
+        </div>
+
+        <div *ngIf="!loadingWorkstations && availableWorkstations.length > 0" class="spaces-grid"
+             formArrayName="workstations">
+          <div *ngFor="let workstation of availableWorkstations; let i = index" class="space-checkbox">
+            <label>
+              <input type="checkbox" [formControlName]="i" [value]="workstation.workstationId"/>
+              <div class="checkbox-content">
+                <span class="space-name">Puesto #{{ workstation.workstationId }}</span>
+                <span class="space-type"><i class="fas fa-desktop"></i> {{ workstation.hourlyRate }}€/hora</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="btn-save" type="submit" [disabled]="floorForm.invalid">
+          <i class="fas" [ngClass]="isEdit ? 'fa-save' : 'fa-plus-circle'"></i>
+          {{ isEdit ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

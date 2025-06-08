@@ -1,0 +1,459 @@
+/* Estilos generales */
+.services-detail-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.form-card {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* Cabecera del formulario */
+.form-header {
+  background-color: #f9fafc;
+  padding: 25px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #222;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.form-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Formulario */
+form {
+  padding: 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+  font-size: 15px;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3498db;
+  font-size: 15px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  color: #444;
+  background-color: #f9fafc;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  background-color: white;
+}
+
+.textarea-container .input-icon {
+  top: 20px;
+  transform: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Mensajes de error de validación */
+.validation-error {
+  color: #e74c3c;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.validation-error i {
+  margin-right: 5px;
+}
+
+/* Estados de carga y error */
+.loading-container, .error-container {
+  padding: 30px;
+  text-align: center;
+  margin: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.loading-container {
+  background-color: rgba(52, 152, 219, 0.05);
+  color: #3498db;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(52, 152, 219, 0.2);
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-container {
+  background-color: rgba(231, 76, 60, 0.05);
+  color: #e74c3c;
+}
+
+.error-container i {
+  font-size: 28px;
+}
+
+/* Botones */
+.buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: flex-end;
+}
+
+.btn-save, .btn-cancel {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-save:disabled {
+  background: linear-gradient(135deg, #a8d2eb, #a8c5d8);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-cancel {
+  background-color: #f1f2f6;
+  color: #576574;
+}
+
+.btn-cancel:hover {
+  background-color: #e3e6ed;
+  color: #222f3e;
+  transform: translateY(-2px);
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .form-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .form-header h2 {
+    text-align: center;
+    font-size: 1.6rem;
+  }
+
+  form {
+    padding: 25px 20px;
+  }
+
+  .buttons {
+    flex-direction: column-reverse;
+  }
+
+  .btn-save, .btn-cancel {
+    width: 100%;
+    justify-content: center;
+  }
+}/* Estilos generales */
+.services-detail-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.form-card {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* Cabecera del formulario */
+.form-header {
+  background-color: #f9fafc;
+  padding: 25px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #222;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.form-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Formulario */
+form {
+  padding: 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+  font-size: 15px;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3498db;
+  font-size: 15px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  color: #444;
+  background-color: #f9fafc;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  background-color: white;
+}
+
+.textarea-container .input-icon {
+  top: 20px;
+  transform: none;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Mensajes de error de validación */
+.validation-error {
+  color: #e74c3c;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.validation-error i {
+  margin-right: 5px;
+}
+
+/* Estados de carga y error */
+.loading-container, .error-container {
+  padding: 30px;
+  text-align: center;
+  margin: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.loading-container {
+  background-color: rgba(52, 152, 219, 0.05);
+  color: #3498db;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(52, 152, 219, 0.2);
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-container {
+  background-color: rgba(231, 76, 60, 0.05);
+  color: #e74c3c;
+}
+
+.error-container i {
+  font-size: 28px;
+}
+
+/* Botones */
+.buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: flex-end;
+}
+
+.btn-save, .btn-cancel {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-save:disabled {
+  background: linear-gradient(135deg, #a8d2eb, #a8c5d8);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-cancel {
+  background-color: #f1f2f6;
+  color: #576574;
+}
+
+.btn-cancel:hover {
+  background-color: #e3e6ed;
+  color: #222f3e;
+  transform: translateY(-2px);
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .form-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .form-header h2 {
+    text-align: center;
+    font-size: 1.6rem;
+  }
+
+  form {
+    padding: 25px 20px;
+  }
+
+  .buttons {
+    flex-direction: column-reverse;
+  }
+
+  .btn-save, .btn-cancel {
+    width: 100%;
+    justify-content: center;
+  }
+}

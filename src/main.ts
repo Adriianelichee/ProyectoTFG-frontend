@@ -3,7 +3,7 @@ import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AppComponent } from './app/app';
+import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { JwtInterceptor } from './app/core/auth/jwt-interceptor';
 import { environment } from './environments/environment';

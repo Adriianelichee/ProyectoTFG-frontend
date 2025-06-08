@@ -30,4 +30,7 @@ export class PurchasedServiceService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  getByCompanyId(companyId: number): Observable<PurchasedServiceOutDto[]> {
+    return this.http.get<PurchasedServiceOutDto[]>(`${this.baseUrl}/company/${companyId}`);
+  }
 }

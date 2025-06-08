@@ -33,12 +33,13 @@
   <div class="container">
     <h2 class="section-title">Nuestros espacios</h2>
     <div class="spaces-tabs">
-      <button class="tab-btn active">Salas de reuniones</button>
-      <button class="tab-btn">Puestos de trabajo</button>
-      <button class="tab-btn">Servicios adicionales</button>
+      <button class="tab-btn" [class.active]="isActiveTab(0)" (click)="setActiveTab(0)">Salas de reuniones</button>
+      <button class="tab-btn" [class.active]="isActiveTab(1)" (click)="setActiveTab(1)">Puestos de trabajo</button>
+      <button class="tab-btn" [class.active]="isActiveTab(2)" (click)="setActiveTab(2)">Servicios adicionales</button>
     </div>
 
-    <div class="spaces-grid">
+    <!-- Contenido de salas de reuniones -->
+    <div class="spaces-grid" *ngIf="isActiveTab(0)">
       <div class="space-card" *ngFor="let room of featuredRooms">
         <div class="space-image" [style.background-image]="'url(/room-' + room.roomId + '.jpg)'">
           <div class="space-badge">Destacado</div>
@@ -52,6 +53,44 @@
           <p>Sala equipada con la última tecnología para tus reuniones y presentaciones.</p>
           <a [routerLink]="isLoggedIn ? ['/rooms', room.roomId] : '/auth/login'" class="btn-outline">
             {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para reservar' }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de puestos de trabajo -->
+    <div class="spaces-grid" *ngIf="isActiveTab(1)">
+      <div class="space-card" *ngFor="let workstation of featuredWorkstations">
+        <div class="space-image" [style.background-image]="'url(/workstation-' + workstation.workstationId + '.jpg)'">
+          <div class="space-badge">Destacado</div>
+        </div>
+        <div class="space-content">
+          <h3>Puesto de trabajo #{{ workstation.workstationId }}</h3>
+          <div class="space-details">
+            <span><i class="fas fa-euro-sign"></i> {{ workstation.hourlyRate }}/hora</span>
+          </div>
+          <p>Espacio de trabajo equipado con todo lo necesario para maximizar tu productividad.</p>
+          <a [routerLink]="isLoggedIn ? ['/workstations', workstation.workstationId] : '/auth/login'" class="btn-outline">
+            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para reservar' }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de servicios adicionales -->
+    <div class="spaces-grid" *ngIf="isActiveTab(2)">
+      <div class="space-card" *ngFor="let service of featuredServices">
+        <div class="space-image" [style.background-image]="'url(/service-' + service.serviceId + '.jpg)'">
+          <div class="space-badge">Destacado</div>
+        </div>
+        <div class="space-content">
+          <h3>{{ service.serviceName }}</h3>
+          <div class="space-details">
+            <span><i class="fas fa-euro-sign"></i> {{ service.price }}</span>
+          </div>
+          <p>{{ service.description }}</p>
+          <a [routerLink]="isLoggedIn ? ['/services', service.serviceId] : '/auth/login'" class="btn-outline">
+            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para solicitar' }}
           </a>
         </div>
       </div>

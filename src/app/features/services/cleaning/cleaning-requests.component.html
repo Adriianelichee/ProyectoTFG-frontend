@@ -1,0 +1,397 @@
+<div class="cleaning-requests-container">
+  <div class="requests-header">
+    <div class="title-section">
+      <h2>Solicitudes de Limpieza</h2>
+      <div class="requests-count">
+        {{ filteredRequests.length }} solicitudes encontradas
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar solicitudes..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()">
+      </div>
+
+      <div class="filter-dropdown">
+        <button class="btn-filter" (click)="toggleFilterDropdown()">
+          <i class="fas fa-filter"></i>
+          <span>Filtros</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <div class="filter-menu" [class.show]="showFilterDropdown">
+          <div class="filter-section">
+            <h4>Estado</h4>
+            <div class="filter-options">
+              <div class="filter-option" (click)="setStatusFilter('all')">
+                <input type="checkbox" [checked]="statusFilter === 'all'">
+                <label>Todos</label>
+              </div>
+              <div class="filter-option" (click)="setStatusFilter('pending')">
+                <input type="checkbox" [checked]="statusFilter === 'pending'">
+                <label>Pendientes</label>
+              </div>
+              <div class="filter-option" (click)="setStatusFilter('inProgress')">
+                <input type="checkbox" [checked]="statusFilter === 'inProgress'">
+                <label>En progreso</label>
+              </div>
+              <div class="filter-option" (click)="setStatusFilter('completed')">
+                <input type="checkbox" [checked]="statusFilter === 'completed'">
+                <label>Completadas</label>
+              </div>
+              <div class="filter-option" (click)="setStatusFilter('cancelled')">
+                <input type="checkbox" [checked]="statusFilter === 'cancelled'">
+                <label>Canceladas</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4>Fecha</h4>
+            <div class="date-range">
+              <div class="date-input-container">
+                <label>Desde:</label>
+                <input
+                  type="date"
+                  [(ngModel)]="dateFilterStart"
+                  (change)="applyFilters()">
+              </div>
+              <div class="date-input-container">
+                <label>Hasta:</label>
+                <input
+                  type="date"
+                  [(ngModel)]="dateFilterEnd"
+                  (change)="applyFilters()">
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn-clear-filters" (click)="clearFilters()">Limpiar filtros</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-refresh" (click)="loadCleaningRequests()">
+        <i class="fas fa-sync-alt"></i>
+        <span>Actualizar</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="status-tabs">
+    <div
+      class="status-tab"
+      [class.active]="statusFilter === 'all'"
+      (click)="setStatusFilter('all')">
+      <span class="tab-name">Todas</span>
+      <span class="tab-count">{{ cleaningRequests.length }}</span>
+    </div>
+    <div
+      class="status-tab"
+      [class.active]="statusFilter === 'pending'"
+      (click)="setStatusFilter('pending')">
+      <span class="tab-name">Pendientes</span>
+      <span class="tab-count">{{ getRequestCountByStatus('pending') }}</span>
+    </div>
+    <div
+      class="status-tab"
+      [class.active]="statusFilter === 'inProgress'"
+      (click)="setStatusFilter('inProgress')">
+      <span class="tab-name">En progreso</span>
+      <span class="tab-count">{{ getRequestCountByStatus('inProgress') }}</span>
+    </div>
+    <div
+      class="status-tab"
+      [class.active]="statusFilter === 'completed'"
+      (click)="setStatusFilter('completed')">
+      <span class="tab-name">Completadas</span>
+      <span class="tab-count">{{ getRequestCountByStatus('completed') }}</span>
+    </div>
+    <div
+      class="status-tab"
+      [class.active]="statusFilter === 'cancelled'"
+      (click)="setStatusFilter('cancelled')">
+      <span class="tab-name">Canceladas</span>
+      <span class="tab-count">{{ getRequestCountByStatus('cancelled') }}</span>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando solicitudes de limpieza...</span>
+  </div>
+
+  <!-- Estado de error -->
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadCleaningRequests()">Reintentar</button>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!loading && !errorMessage && filteredRequests.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-broom"></i>
+    </div>
+    <h3>No hay solicitudes de limpieza</h3>
+    <p *ngIf="searchTerm || statusFilter !== 'all' || dateFilterStart || dateFilterEnd">
+      No se encontraron solicitudes que coincidan con los filtros aplicados
+    </p>
+    <p *ngIf="!searchTerm && statusFilter === 'all' && !dateFilterStart && !dateFilterEnd">
+      No hay solicitudes de limpieza registradas en el sistema
+    </p>
+    <button class="btn-clear-filters" (click)="clearFilters()" *ngIf="searchTerm || statusFilter !== 'all' || dateFilterStart || dateFilterEnd">
+      <i class="fas fa-filter"></i>
+      <span>Limpiar filtros</span>
+    </button>
+  </div>
+
+  <!-- Tabla de solicitudes -->
+  <div *ngIf="!loading && !errorMessage && filteredRequests.length > 0" class="requests-table-container">
+    <table class="requests-table">
+      <thead>
+        <tr>
+          <th (click)="sortBy('cleaningId')" class="sortable">
+            ID
+            <i class="fas" [ngClass]="getSortIcon('cleaningId')"></i>
+          </th>
+          <th (click)="sortBy('cleaningDate')" class="sortable">
+            Fecha programada
+            <i class="fas" [ngClass]="getSortIcon('cleaningDate')"></i>
+          </th>
+          <th>Ubicación</th>
+          <th>Solicitante</th>
+          <th (click)="sortBy('status')" class="sortable">
+            Estado
+            <i class="fas" [ngClass]="getSortIcon('status')"></i>
+          </th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of paginatedRequests" [class]="'status-' + request.status">
+          <td class="id-column">{{ request.cleaningId }}</td>
+          <td class="date-column">
+            <div class="date-info">
+              <i class="far fa-calendar-alt"></i>
+              <span>{{ formatDate(request.cleaningDate) }}</span>
+            </div>
+            <div class="time-info">
+              <i class="far fa-clock"></i>
+              <span>{{ formatTime(request.cleaningDate) }}</span>
+            </div>
+          </td>
+          <td class="location-column">
+            <div class="location-info">
+              <span class="location-title">{{ getFloorName(request.floorId) }}</span>
+              <span class="location-details" *ngIf="request.roomId">
+                Sala: {{ getRoomName(request.roomId) }}
+              </span>
+              <span class="location-details" *ngIf="request.workstationId">
+                Puesto: #{{ request.workstationId }}
+              </span>
+            </div>
+          </td>
+          <td class="user-column">
+            <div class="user-info">
+              <div class="user-avatar">
+                {{ getUserInitials(request.userId) }}
+              </div>
+              <div class="user-details">
+                <span class="user-name">{{ getUserName(request.userId) }}</span>
+                <span class="company-name">{{ getUserCompanyName(request.userId) }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="status-column">
+            <div class="status-badge" [ngClass]="'status-' + request.status">
+              <i class="fas" [ngClass]="getStatusIcon(request.status)"></i>
+              <span>{{ getStatusLabel(request.status) }}</span>
+            </div>
+          </td>
+          <td class="actions-column">
+            <button class="btn-view" (click)="viewDetails(request)">
+              <i class="fas fa-eye"></i>
+            </button>
+
+            <button
+              class="btn-start"
+              *ngIf="request.status === 'pending'"
+              (click)="startCleaning(request)">
+              <i class="fas fa-play"></i>
+            </button>
+
+            <button
+              class="btn-complete"
+              *ngIf="request.status === 'inProgress'"
+              (click)="completeCleaning(request)">
+              <i class="fas fa-check"></i>
+            </button>
+
+            <button
+              class="btn-cancel"
+              *ngIf="request.status === 'pending' || request.status === 'inProgress'"
+              (click)="cancelCleaning(request)">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="!loading && !errorMessage && filteredRequests.length > 0" class="pagination-container">
+    <div class="pagination-info">
+      Mostrando {{ getPaginationInfo().start }} a {{ getPaginationInfo().end }} de {{ filteredRequests.length }} solicitudes
+    </div>
+    <div class="pagination-controls">
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(1)">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <span class="page-info">{{ currentPage }} de {{ totalPages }}</span>
+
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(totalPages)">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+    </div>
+    <div class="pagination-size">
+      <label for="pageSize">Mostrar:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="changePage()">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Modal de detalles -->
+  <div class="detail-modal" [class.show]="selectedRequest">
+    <div class="modal-overlay" (click)="closeModal()"></div>
+    <div class="modal-content" *ngIf="selectedRequest">
+      <div class="modal-header">
+        <h3>Detalles de Solicitud #{{ selectedRequest.cleaningId }}</h3>
+        <button class="btn-close" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-card">
+            <div class="detail-icon">
+              <i class="far fa-calendar-alt"></i>
+            </div>
+            <h4>Fecha Programada</h4>
+            <div class="detail-value">{{ formatDate(selectedRequest.cleaningDate) }}</div>
+            <div class="detail-subvalue">{{ formatTime(selectedRequest.cleaningDate) }}</div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <h4>Ubicación</h4>
+            <div class="detail-value">{{ getFloorName(selectedRequest.floorId) }}</div>
+            <div class="detail-subvalue" *ngIf="selectedRequest.roomId">
+              Sala: {{ getRoomName(selectedRequest.roomId) }}
+            </div>
+            <div class="detail-subvalue" *ngIf="selectedRequest.workstationId">
+              Puesto: #{{ selectedRequest.workstationId }}
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <h4>Solicitante</h4>
+            <div class="detail-value">{{ getUserName(selectedRequest.userId) }}</div>
+            <div class="detail-subvalue">{{ getUserCompanyName(selectedRequest.userId) }}</div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-icon">
+              <i [ngClass]="getStatusIcon(selectedRequest.status)"></i>
+            </div>
+            <h4>Estado</h4>
+            <div class="status-badge large" [ngClass]="'status-' + selectedRequest.status">
+              {{ getStatusLabel(selectedRequest.status) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="notes-section" *ngIf="selectedRequest.notes">
+          <h4>Notas adicionales</h4>
+          <div class="notes-content">
+            {{ selectedRequest.notes }}
+          </div>
+        </div>
+
+        <div class="cleaning-history" *ngIf="selectedRequest.history?.length">
+          <h4>Historial</h4>
+          <ul class="history-timeline">
+            <li *ngFor="let event of selectedRequest.history" class="history-item">
+              <div class="history-marker"></div>
+              <div class="history-content">
+                <div class="history-title">{{ event.action }}</div>
+                <div class="history-date">{{ formatDateTime(event.date) }}</div>
+                <div class="history-user">{{ event.username }}</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn-cancel-request"
+          *ngIf="selectedRequest.status === 'pending' || selectedRequest.status === 'inProgress'"
+          (click)="cancelCleaning(selectedRequest)">
+          <i class="fas fa-times"></i>
+          Cancelar solicitud
+        </button>
+        <button
+          class="btn-start-cleaning"
+          *ngIf="selectedRequest.status === 'pending'"
+          (click)="startCleaning(selectedRequest)">
+          <i class="fas fa-play"></i>
+          Iniciar limpieza
+        </button>
+        <button
+          class="btn-complete-cleaning"
+          *ngIf="selectedRequest.status === 'inProgress'"
+          (click)="completeCleaning(selectedRequest)">
+          <i class="fas fa-check"></i>
+          Completar limpieza
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

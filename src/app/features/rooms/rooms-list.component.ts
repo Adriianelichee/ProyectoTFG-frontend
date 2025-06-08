@@ -1,26 +1,29 @@
-// src/app/features/rooms/rooms-list.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule} from '@angular/common';
-import { RoomService } from '../../core/api/room.service';
-import { RoomOutDto } from '../../core/models/room-out-dto';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RoomService} from '../../core/api/room.service';
+import {RoomOutDto} from '../../core/models/room-out-dto';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-rooms-list',
   templateUrl: './rooms-list.component.html',
   styleUrls: ['./rooms-list.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class RoomsListComponent implements OnInit {
   rooms: RoomOutDto[] = [];
+  filteredRooms: RoomOutDto[] = [];
+  searchTerm: string = '';
   loading = false;
   errorMessage: string | null = null;
 
   constructor(
     private roomService: RoomService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadRooms();
@@ -32,6 +35,7 @@ export class RoomsListComponent implements OnInit {
     this.roomService.getAll().subscribe({
       next: (data) => {
         this.rooms = data;
+        this.filteredRooms = [...this.rooms];
         this.loading = false;
       },
       error: (err) => {
@@ -42,8 +46,28 @@ export class RoomsListComponent implements OnInit {
     });
   }
 
+  filterRooms(): void {
+    if (!this.searchTerm) {
+      this.filteredRooms = [...this.rooms];
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase();
+    this.filteredRooms = this.rooms.filter(room =>
+      room.roomName.toLowerCase().includes(term) ||
+      room.roomId.toString().includes(term) ||
+      room.capacity.toString().includes(term) ||
+      room.hourlyRate.toString().includes(term) ||
+      room.floorId.toString().includes(term)
+    );
+  }
+
   onCreate(): void {
     void this.router.navigate(['/rooms/new']);
+  }
+
+  onView(roomId: number): void {
+    void this.router.navigate([`/rooms/${roomId}/view`]);
   }
 
   onEdit(roomId: number): void {

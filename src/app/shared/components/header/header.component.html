@@ -1,0 +1,65 @@
+<header class="site-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/">
+          <img src="/coworking-logo.jpg" alt="CoWork Space Logo" class="logo-image">
+          <span class="logo-text">Cowork Space</span>
+        </a>
+      </div>
+
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+          <li><a routerLink="/spaces" routerLinkActive="active">Espacios</a></li>
+          <li><a routerLink="/floors" routerLinkActive="active">Plantas</a></li>
+          <li><a routerLink="/pricing" routerLinkActive="active">Precios</a></li>
+          <li><a routerLink="/about" routerLinkActive="active">Nosotros</a></li>
+          <li><a routerLink="/contact" routerLinkActive="active">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="auth-buttons">
+        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
+          <a routerLink="/auth/login" class="btn-login">Iniciar sesión</a>
+          <a routerLink="/auth/register" class="btn-register">Registrarse</a>
+        </ng-container>
+        <ng-template #loggedInTemplate>
+          <div class="user-menu">
+            <button class="user-menu-btn" (click)="toggleUserMenu()">
+              <i class="fas fa-user-circle"></i>
+              <span>{{ userName }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown" [class.show]="showUserMenu">
+              <a routerLink="/profile">Mi perfil</a>
+              <a routerLink="/reservations">Mis reservas</a>
+              <a routerLink="/settings">Configuración</a>
+              <a href="#" (click)="logout($event)">Cerrar sesión</a>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+      <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+        <i class="fas" [ngClass]="{'fa-bars': !showMobileMenu, 'fa-times': showMobileMenu}"></i>
+      </button>
+    </div>
+
+    <div class="mobile-nav" [class.show]="showMobileMenu">
+      <ul class="mobile-nav-list">
+        <li><a routerLink="/" (click)="closeMobileMenu()">Inicio</a></li>
+        <li><a routerLink="/spaces" (click)="closeMobileMenu()">Espacios</a></li>
+        <li><a routerLink="/floors" (click)="closeMobileMenu()">Plantas</a></li>
+        <li><a routerLink="/pricing" (click)="closeMobileMenu()">Precios</a></li>
+        <li><a routerLink="/about" (click)="closeMobileMenu()">Nosotros</a></li>
+        <li><a routerLink="/contact" (click)="closeMobileMenu()">Contacto</a></li>
+        <li *ngIf="!isLoggedIn"><a routerLink="/auth/login" (click)="closeMobileMenu()">Iniciar sesión</a></li>
+        <li *ngIf="!isLoggedIn"><a routerLink="/auth/register" (click)="closeMobileMenu()">Registrarse</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/profile" (click)="closeMobileMenu()">Mi perfil</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/reservations" (click)="closeMobileMenu()">Mis reservas</a></li>
+        <li *ngIf="isLoggedIn"><a href="#" (click)="logout($event); closeMobileMenu()">Cerrar sesión</a></li>
+      </ul>
+    </div>
+  </div>
+</header>

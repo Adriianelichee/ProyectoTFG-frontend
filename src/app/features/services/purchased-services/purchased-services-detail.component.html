@@ -1,0 +1,113 @@
+<div class="purchased-service-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Modificar Contratación' : 'Contratar Servicio' }}</h2>
+      <div class="service-icon">
+        <i class="fas fa-handshake"></i>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Cargando datos...</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+      <div class="form-group">
+        <label for="service">Servicio a contratar</label>
+        <div class="input-container">
+          <i class="fas fa-concierge-bell input-icon"></i>
+          <select
+            id="service"
+            formControlName="serviceId"
+            class="form-select"
+            [attr.disabled]="isEdit ? true : null">
+            <option value="" disabled selected>Selecciona un servicio</option>
+            <option *ngFor="let service of availableServices" [value]="service.serviceId">
+              {{ service.serviceName }} - {{ service.price | currency:'EUR':'symbol':'1.2-2' }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="serviceIdControl.invalid && serviceIdControl.touched" class="validation-error">
+          <i class="fas fa-exclamation-triangle"></i> Debes seleccionar un servicio
+        </div>
+      </div>
+
+      <div *ngIf="selectedService" class="service-details-box">
+        <h3>{{ selectedService.serviceName }}</h3>
+        <p class="service-description">{{ selectedService.description }}</p>
+        <div class="service-price">
+          <span>Precio:</span>
+          <span class="price-value">{{ selectedService.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="purchaseDate">Fecha de contratación</label>
+        <div class="input-container">
+          <i class="fas fa-calendar-plus input-icon"></i>
+          <input
+            type="date"
+            id="purchaseDate"
+            formControlName="purchaseDate"
+            [min]="minDate">
+        </div>
+        <div *ngIf="purchaseDateControl.invalid && purchaseDateControl.touched" class="validation-error">
+          <i class="fas fa-exclamation-triangle"></i> La fecha de contratación es requerida
+        </div>
+        <div class="validation-error" *ngIf="hasDateInPastError()">
+         <i class="fas fa-exclamation-triangle"></i> La fecha de compra no puede estar en el pasado
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="expirationDate">Fecha de expiración (opcional)</label>
+        <div class="input-container">
+          <i class="fas fa-calendar-times input-icon"></i>
+          <input
+            type="date"
+            id="expirationDate"
+            formControlName="expirationDate"
+            [min]="minExpirationDate">
+        </div>
+        <div class="validation-error" *ngIf="hasExpirationDateError()">
+          <i class="fas fa-exclamation-triangle"></i> La fecha de expiración debe ser igual o posterior a la fecha de compra
+        </div>
+      </div>
+
+      <div class="company-info">
+        <div class="info-badge">
+          <i class="fas fa-building"></i>
+          <span>Contratado para: <strong>{{ companyName }}</strong></span>
+        </div>
+      </div>
+
+      <div class="form-group terms-checkbox">
+        <div class="checkbox-container">
+          <input
+            type="checkbox"
+            id="termsAccepted"
+            formControlName="termsAccepted">
+          <label for="termsAccepted">Acepto los términos y condiciones del servicio</label>
+        </div>
+        <div *ngIf="termsAcceptedControl.invalid && termsAcceptedControl.touched" class="validation-error">
+          <i class="fas fa-exclamation-triangle"></i> Debes aceptar los términos y condiciones
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="btn-save" type="submit" [disabled]="purchaseForm.invalid">
+          <i class="fas fa-check"></i> {{ isEdit ? 'Actualizar' : 'Contratar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

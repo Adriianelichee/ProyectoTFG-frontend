@@ -129,6 +129,10 @@
         <small><i class="fa fa-exclamation-triangle"></i> {{ errorMessage }}</small>
       </div>
 
+      <div *ngIf="registrationSuccess" class="success-message">
+        <i class="fas fa-check-circle"></i>
+        Usuario registrado correctamente
+      </div>
       <button
         class="btn-submit"
         type="submit"

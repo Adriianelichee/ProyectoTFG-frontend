@@ -1,0 +1,107 @@
+<div class="purchased-services-container">
+  <div class="services-header">
+    <div class="title-section">
+      <h2>Servicios Contratados</h2>
+      <p class="services-count">{{ filteredServices.length }} servicios contratados</p>
+    </div>
+
+    <div class="actions-section">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Buscar en servicios contratados..."
+          [(ngModel)]="searchTerm"
+          (input)="filterServices()"
+          class="search-input">
+      </div>
+
+      <button class="btn-create" (click)="onContractService()">
+        <i class="fas fa-plus"></i> Contratar Nuevo Servicio
+      </button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-option" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+      Todos los servicios
+    </div>
+    <div class="filter-option" [class.active]="activeFilter === 'active'" (click)="setFilter('active')">
+      Activos
+    </div>
+    <div class="filter-option" [class.active]="activeFilter === 'expired'" (click)="setFilter('expired')">
+      Expirados
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando servicios contratados...</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadPurchasedServices()">Reintentar</button>
+  </div>
+
+  <div class="services-grid" *ngIf="!loading && filteredServices.length > 0">
+    <div class="purchased-card" *ngFor="let purchased of filteredServices" [ngClass]="getServiceStatusClass(purchased)">
+      <div class="purchased-status">
+        <i [class]="getServiceStatusIcon(purchased)"></i> {{ getServiceStatusText(purchased) }}
+      </div>
+
+      <div class="purchased-header">
+        <h3>{{ getServiceName(purchased.serviceId) }}</h3>
+        <span class="purchased-id">#{{ purchased.purchasedServiceId }}</span>
+      </div>
+
+      <div class="purchased-details">
+        <div class="detail-item">
+          <i class="fas fa-calendar-plus"></i>
+          <span>Contratado: {{ purchased.purchaseDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="purchased.expirationDate">
+          <i class="fas fa-calendar-times"></i>
+          <span>Expira: {{ purchased.expirationDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="!purchased.expirationDate">
+          <i class="fas fa-infinity"></i>
+          <span>Sin fecha de expiración</span>
+        </div>
+
+        <div class="detail-item price-item" *ngIf="getServicePrice(purchased.serviceId)">
+          <i class="fas fa-tag"></i>
+          <span>{{ getServicePrice(purchased.serviceId) | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="purchased-description">
+        <p>{{ getServiceDescription(purchased.serviceId) }}</p>
+      </div>
+
+      <div class="purchased-actions">
+        <button class="btn-view" (click)="onView(purchased.purchasedServiceId)">
+          <i class="fas fa-eye"></i> Ver Detalles
+        </button>
+        <button class="btn-edit" (click)="onEdit(purchased.purchasedServiceId)" [disabled]="isServiceExpired(purchased)">
+          <i class="fas fa-edit"></i> Modificar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredServices.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-handshake"></i>
+    </div>
+    <h3>No hay servicios contratados</h3>
+    <p *ngIf="searchTerm || activeFilter !== 'all'">No se encontraron servicios que coincidan con los filtros aplicados</p>
+    <p *ngIf="!searchTerm && activeFilter === 'all'">Aún no ha contratado ningún servicio para su empresa</p>
+    <button class="btn-create-empty" (click)="onContractService()">
+      <i class="fas fa-plus"></i> Contratar Primer Servicio
+    </button>
+  </div>
+</div>
