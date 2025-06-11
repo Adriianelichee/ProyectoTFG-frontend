@@ -1,0 +1,244 @@
+/* Contenedor principal */
+.provider-details-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px;
+  background: #f8f9fa;
+  min-height: calc(100vh - 120px);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Tarjeta del formulario */
+.provider-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.provider-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Encabezado de la tarjeta */
+.card-header {
+  background: linear-gradient(135deg, #2c3e50, #1a2530);
+  color: white;
+  padding: 30px 40px;
+  position: relative;
+}
+
+.card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db, #2ecc71);
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.card-subtitle {
+  margin: 10px 0 0;
+  opacity: 0.8;
+  font-size: 0.95rem;
+  font-weight: 300;
+}
+
+/* Formulario */
+.provider-form {
+  padding: 30px 40px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.optional {
+  color: #7f8c8d;
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+/* Inputs con iconos */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  color: #2c3e50;
+}
+
+.input-with-icon textarea {
+  padding: 12px 12px 12px 40px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.input-with-icon textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  background-color: white;
+}
+
+.input-with-icon input.ng-invalid.ng-touched,
+.input-with-icon select.ng-invalid.ng-touched {
+  border-color: #e74c3c;
+}
+
+/* Errores de formulario */
+.form-error {
+  margin-top: 6px;
+  color: #e74c3c;
+  font-size: 0.85rem;
+}
+
+/* Mensajes de éxito y error */
+.form-message {
+  margin-bottom: 20px;
+}
+
+.success-message {
+  background-color: rgba(46, 204, 113, 0.1);
+  border-left: 4px solid #2ecc71;
+  color: #27ae60;
+  padding: 12px 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+  padding: 12px 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.success-message i,
+.error-message i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+/* Botones de acción */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn-cancel,
+.btn-submit {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.btn-cancel {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  color: #7f8c8d;
+}
+
+.btn-cancel:hover {
+  background-color: #f8f9fa;
+  border-color: #bdc3c7;
+  color: #34495e;
+}
+
+.btn-submit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-submit:not(:disabled):hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .provider-card {
+    border-radius: 8px;
+  }
+
+  .card-header {
+    padding: 20px 25px;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+
+  .provider-form {
+    padding: 20px 25px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}

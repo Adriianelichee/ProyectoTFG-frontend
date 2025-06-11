@@ -1,0 +1,414 @@
+/* Estilos generales del contenedor de pagos */
+.payment-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px;
+  min-height: calc(100vh - 100px);
+  background-color: #f9f9f9;
+}
+
+.payment-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px;
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+/* Encabezado de la tarjeta de pago */
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.payment-header h2 {
+  color: #333;
+  margin: 0;
+  font-size: 24px;
+}
+
+.payment-icon {
+  background-color: #4c68d7;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Contenido del formulario de pago */
+.payment-content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .payment-content {
+    flex-direction: row;
+    gap: 30px;
+  }
+
+  .reservation-details, .payment-form {
+    flex: 1;
+  }
+}
+
+/* Estilos para los detalles de la reserva */
+.reservation-details {
+  margin-bottom: 25px;
+}
+
+.reservation-details h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.details-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #4c68d7;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+  min-width: 120px;
+}
+
+.detail-value {
+  color: #333;
+  flex: 1;
+}
+
+.detail-value.description {
+  font-style: italic;
+  color: #666;
+}
+
+.total-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eef2ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.amount-label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.amount-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4c68d7;
+}
+
+/* Estilos para el formulario de pago */
+.payment-form {
+  margin-bottom: 25px;
+}
+
+.payment-form h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+input, select {
+  width: 75%;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #4c68d7;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 104, 215, 0.2);
+}
+
+/* Estilos para las opciones de métodos de pago */
+.payment-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.payment-method-option {
+  flex-basis: calc(33.33% - 10px);
+  min-width: 100px;
+}
+
+.payment-method-option input[type="radio"] {
+  display: none;
+}
+
+.payment-method-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.payment-method-option label i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.payment-method-option input[type="radio"]:checked + label {
+  border-color: #4c68d7;
+  background-color: #f0f4ff;
+  color: #4c68d7;
+}
+
+/* Estilos para detalles de la tarjeta de crédito */
+.credit-card-details {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+/* Checkbox personalizado */
+.form-group-checkbox {
+  margin: 20px 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #4c68d7;
+  border-color: #4c68d7;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-label {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+/* Instrucciones de pago */
+.payment-instructions {
+  margin-top: 15px;
+}
+
+.instruction-box {
+  background-color: #f0f4ff;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #4c68d7;
+}
+
+.instruction-box h4 {
+  color: #4c68d7;
+  margin-top: 0;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.instruction-box p{
+  color: #6c757d;
+}
+
+.account-number {
+  font-family: monospace;
+  font-size: 16px;
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* Botones de acción */
+.payment-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.btn-cancel, .btn-pay {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.btn-cancel {
+  background-color: #f2f2f2;
+  color: #666;
+}
+
+.btn-pay {
+  background-color: #4c68d7;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-pay:hover {
+  background-color: #3a53b5;
+}
+
+.btn-pay:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Estados de carga y mensajes */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #4c68d7;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container, .success-container {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.error-container {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.success-container {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}

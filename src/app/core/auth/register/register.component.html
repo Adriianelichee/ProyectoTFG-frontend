@@ -2,7 +2,7 @@
 <div class="login-wrapper register-wrapper">
   <div class="register-card tilt-card">
     <div class="logo-section">
-      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo" />
+      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo"/>
       <h1 class="brand">CoWork Space</h1>
     </div>
 
@@ -51,6 +51,7 @@
       <div class="error" *ngIf="emailControl.invalid && emailControl.touched">
         <small *ngIf="emailControl.hasError('required')">El email es obligatorio.</small>
         <small *ngIf="emailControl.hasError('email')">Formato inválido.</small>
+        <small *ngIf="emailControl.hasError('emailExists')">Este correo electrónico ya está registrado.</small>
       </div>
 
       <!-- Contraseña -->

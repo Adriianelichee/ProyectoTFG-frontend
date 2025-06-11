@@ -1,1 +1,37 @@
-<p>detail-reservations-rooms works!</p>
+<div class="detail-container">
+  <div class="detail-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-arrow-left"></i> Volver a Reservas
+    </button>
+    <h2><i class="fa fa-building"></i> Detalles de Reserva de Sala</h2>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="fa fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <i class="fa fa-spinner fa-spin"></i> Cargando detalles...
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && detailInfo" class="detail-content">
+    <div class="detail-card">
+
+      <div class="detail-section">
+        <h3>Periodo de Reserva</h3>
+        <div class="info-row">
+          <span class="label">Hora de inicio:</span>
+          <span class="value">{{ detailInfo.startTime | date:'medium' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Hora de fin:</span>
+          <span class="value">{{ detailInfo.endTime | date:'medium' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && !detailInfo" class="no-data">
+    <i class="fa fa-info-circle"></i> No se encontraron detalles para esta reserva
+  </div>
+</div>

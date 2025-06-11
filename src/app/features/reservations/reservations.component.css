@@ -1,0 +1,120 @@
+.reservations-container {
+  max-width: 800px;
+  margin: 40px auto;
+  font-family: 'Poppins', Arial, sans-serif;
+  padding: 0 20px;
+}
+
+.details-btn {
+  margin-top: 10px;
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.details-btn:hover {
+  background: #219150;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #27ae60;
+  font-size: 2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.error, .loading, .no-data {
+  text-align: center;
+  color: #e74c3c;
+  margin: 18px 0;
+  background: rgba(231, 76, 60, 0.07);
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 1.08rem;
+}
+
+.loading {
+  color: #27ae60;
+  background: rgba(46, 204, 113, 0.07);
+}
+
+.no-data {
+  color: #888;
+  background: #f7f7f7;
+}
+
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.reservation-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  padding: 22px 28px;
+  border: 1px solid #e1e1e1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.reservation-title {
+  color: #27ae60;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.reservation-date {
+  color: #888;
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.reservation-details {
+  display: flex;
+  gap: 25px;
+  color: #555;
+  font-size: 0.98rem;
+  align-items: center;
+}
+
+.reservation-details i {
+  margin-right: 4px;
+}
+
+@media (max-width: 600px) {
+  .reservation-card {
+    padding: 16px 10px;
+  }
+  .reservation-details {
+    flex-direction: column;
+    gap: 7px;
+    align-items: flex-start;
+  }
+}

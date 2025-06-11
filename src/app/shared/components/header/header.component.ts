@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/auth/auth.service';
-import { Router } from '@angular/router';
-import { Subscription, interval } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {AuthService} from '../../../core/auth/auth.service';
+import {Router} from '@angular/router';
+import {Subscription, interval} from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +14,7 @@ import { Subscription, interval } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
+  isAdmin = false; // Nueva propiedad para verificar si es admin
   userName = 'Usuario';
   showUserMenu = false;
   showMobileMenu = false;
@@ -22,7 +23,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // Verificar el estado de autenticación inicial
@@ -44,11 +46,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   checkAuthStatus(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
 
-    // Aquí podrías obtener información adicional del usuario si tienes un método para ello
-    // Por ejemplo, decodificar el token JWT para obtener el nombre del usuario
+    // Si está logueado, verificar si es administrador
     if (this.isLoggedIn) {
-      // Si tienes un método para obtener información del usuario, úsalo aquí
-      // this.userName = this.getUserNameFromToken() || 'Usuario';
+      // Verificación de rol admin (asumiendo que hay un método hasRole en AuthService)
+      this.isAdmin = this.authService.hasRole('admin');
+
+      // Obtener nombre de usuario si está disponible
+      this.userName = this.getUserNameFromToken() || 'Usuario';
     }
   }
 
@@ -69,10 +73,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.showUserMenu = false;
     this.isLoggedIn = false;
+    this.isAdmin = false; // Resetear el rol de admin al cerrar sesión
     this.router.navigate(['/']);
   }
 
-  // Método auxiliar para extraer el nombre del usuario del token JWT (opcional)
+  // Método auxiliar para extraer el nombre del usuario del token JWT
   private getUserNameFromToken(): string | null {
     const token = this.authService.getToken();
     if (!token) return null;

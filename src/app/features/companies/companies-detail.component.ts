@@ -1,18 +1,18 @@
-// src/app/features/companies/companies-detail.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CompanyService } from '../../core/api/company.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CompanyInDto } from '../../core/models/company-in-dto';
-import { CompanyOutDto } from '../../core/models/company-out-dto';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CompanyService} from '../../core/api/company.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {CompanyInDto} from '../../core/models/company-in-dto';
+import {CompanyOutDto} from '../../core/models/company-out-dto';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-companies-detail',
   templateUrl: './companies-detail.component.html',
   styleUrls: ['./companies-detail.component.css'],
   standalone: true,
-  imports: [ CommonModule, ReactiveFormsModule ]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class CompaniesDetailComponent implements OnInit {
   companyForm!: FormGroup;
@@ -20,15 +20,26 @@ export class CompaniesDetailComponent implements OnInit {
   isEdit = false;
   loading = false;
   errorMessage: string | null = null;
+  canEdit = false;
 
   constructor(
     private fb: FormBuilder,
     private companyService: CompanyService,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+    private authService: AuthService
+  ) {
+  }
 
   ngOnInit(): void {
+    const user = this.authService.getCurrentUser();
+    this.canEdit = !!user && (user.role === 'admin' || user.role === 'secretary');
+
+    if (!this.canEdit) {
+      this.router.navigate(['/']);
+      return;
+    }
+
     this.companyForm = this.fb.group({
       companyName: ['', [Validators.required, Validators.maxLength(45)]],
       address: ['', [Validators.required, Validators.maxLength(100)]],
@@ -99,18 +110,21 @@ export class CompaniesDetailComponent implements OnInit {
   }
 
   onCancel(): void {
-   void this.router.navigate(['/companies']);
+    void this.router.navigate(['/companies']);
   }
 
   get companyNameControl() {
     return this.companyForm.get('companyName')!;
   }
+
   get addressControl() {
     return this.companyForm.get('address')!;
   }
+
   get phoneControl() {
     return this.companyForm.get('phone')!;
   }
+
   get contactEmailControl() {
     return this.companyForm.get('contactEmail')!;
   }

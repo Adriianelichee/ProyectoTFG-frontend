@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PaymentInDto } from '../models/payment-in-dto';
+import {PaymentInDto, PaymentStatus} from '../models/payment-in-dto';
 import { PaymentOutDto } from '../models/payment-out-dto';
 import { environment } from '../../../environments/environment';
 
@@ -29,5 +29,9 @@ export class PaymentService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  updateStatus(paymentId: number, newStatus: PaymentStatus): Observable<PaymentOutDto>{
+    return this.http.put<PaymentOutDto>(`${this.baseUrl}/${paymentId}/status`, { status: newStatus });
   }
 }

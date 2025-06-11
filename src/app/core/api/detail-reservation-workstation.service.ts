@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DetailReservationWorkstationInDto } from '../models/detail-reservation-workstation-in-dto';
 import { DetailReservationWorkstationOutDto } from '../models/detail-reservation-workstation-out-dto';
 import { environment } from '../../../environments/environment';
+import {DetailReservationRoomOutDto} from '../models/detail-reservation-room-out-dto';
 
 @Injectable({ providedIn: 'root' })
 export class DetailReservationWorkstationService {
@@ -21,6 +22,10 @@ export class DetailReservationWorkstationService {
 
   create(dto: DetailReservationWorkstationInDto): Observable<DetailReservationWorkstationOutDto> {
     return this.http.post<DetailReservationWorkstationOutDto>(this.baseUrl, dto);
+  }
+
+  getByReservationId(reservationId: number): Observable<DetailReservationWorkstationOutDto> {
+    return this.http.get<DetailReservationWorkstationOutDto>(`${this.baseUrl}/reservation/${reservationId}`);
   }
 
   update(id: number, dto: DetailReservationWorkstationInDto): Observable<DetailReservationWorkstationOutDto> {

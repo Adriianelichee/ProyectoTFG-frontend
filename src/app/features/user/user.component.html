@@ -1,1 +1,160 @@
-<p>user works!</p>
+<div class="profile-container">
+  <div class="profile-header">
+    <h1><i class="fa fa-user-circle"></i> Mi Perfil</h1>
+    <p>Gestiona tu información personal y consulta tus reservas</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab" [class.active]="activeTab === 'profile'" (click)="changeTab('profile')">
+      <i class="fa fa-id-card"></i> Datos Personales
+    </div>
+    <div class="tab" [class.active]="activeTab === 'reservations'" (click)="changeTab('reservations')">
+      <i class="fa fa-calendar"></i> Mis Reservas
+    </div>
+  </div>
+
+  <!-- Pestaña de Perfil -->
+  <div class="tab-content" *ngIf="activeTab === 'profile'">
+    <!-- Contenido del perfil sin cambios -->
+    <div class="loading-spinner" *ngIf="loading">
+      <i class="fa fa-spinner fa-spin"></i> Cargando datos...
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      <i class="fa fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <form *ngIf="userForm && !loading" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="firstName">Nombre</label>
+        <input type="text" id="firstName" formControlName="firstName" class="form-control">
+        <div class="error-hint" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+          El nombre es obligatorio
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Apellidos</label>
+        <input type="text" id="lastName" formControlName="lastName" class="form-control">
+        <div class="error-hint" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+          Los apellidos son obligatorios
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" class="form-control">
+        <div class="error-hint" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+          <span *ngIf="userForm.get('email')?.errors?.['required']">El email es obligatorio</span>
+          <span *ngIf="userForm.get('email')?.errors?.['email']">Introduce un email válido</span>
+          <span *ngIf="userForm.get('email')?.errors?.['emailExists']">Este correo electrónico ya está registrado</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Teléfono</label>
+        <input type="tel" id="phone" formControlName="phone" class="form-control">
+        <div class="error-hint" *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched">
+          El teléfono es obligatorio
+        </div>
+      </div>
+
+      <div class="password-section">
+        <h3>Cambiar contraseña</h3>
+        <div class="form-group">
+          <label for="currentPassword">Contraseña actual</label>
+          <input type="password" id="currentPassword" formControlName="currentPassword" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Nueva contraseña</label>
+          <input type="password" id="newPassword" formControlName="newPassword" class="form-control">
+          <div class="error-hint" *ngIf="userForm.get('newPassword')?.invalid && userForm.get('newPassword')?.touched">
+            La contraseña debe tener al menos 8 caracteres
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar contraseña</label>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control">
+          <div class="error-hint"
+               *ngIf="userForm.errors?.['passwordMismatch'] && userForm.get('confirmPassword')?.touched">
+            Las contraseñas no coinciden
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || loading">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Pestaña de Reservas (corregida) -->
+  <div class="tab-content" *ngIf="activeTab === 'reservations'">
+    <div class="loading-spinner" *ngIf="loadingReservations">
+      <i class="fa fa-spinner fa-spin"></i> Cargando reservas...
+    </div>
+
+    <div class="error-message" *ngIf="reservationsError">
+      <i class="fa fa-exclamation-circle"></i> {{ reservationsError }}
+    </div>
+
+    <div class="no-data" *ngIf="!loadingReservations && (!userReservations || userReservations.length === 0)">
+      <i class="fa fa-info-circle"></i> No tienes reservas activas
+    </div>
+
+    <div class="reservations-list" *ngIf="!loadingReservations && userReservations && userReservations.length > 0">
+      <div class="reservation-filters">
+        <select class="form-control" [(ngModel)]="reservationFilter" (change)="filterReservations()">
+          <option value="all">Todas las reservas</option>
+          <option value="active">Reservas activas</option>
+          <option value="past">Reservas pasadas</option>
+          <option value="upcoming">Próximas reservas</option>
+        </select>
+      </div>
+
+      <div class="reservation-card" *ngFor="let reservation of filteredReservations">
+        <div class="reservation-header">
+                  <span class="reservation-type" [class]="reservation.reservationType">
+                    <i class="fa" [ngClass]="reservation.reservationType === 'room' ? 'fa-building' : 'fa-desktop'"></i>
+                    {{ reservation.reservationType === 'room' ? 'Sala' : 'Estación de trabajo' }}
+                  </span>
+          <span class="reservation-status" [class]="getStatusClass(reservation)">
+                    {{ getStatusText(reservation) }}
+                  </span>
+        </div>
+
+        <div class="reservation-body">
+          <div class="reservation-info">
+            <div>
+              <strong>Fecha:</strong> {{ reservation.startDate | date:'dd/MM/yyyy' }}
+            </div>
+            <div>
+              <strong>Hora:</strong> {{ reservation.startDate | date:'HH:mm' }}
+              - {{ reservation.endDate | date:'HH:mm' }}
+            </div>
+            <div>
+              <strong>Estado:</strong> {{ reservation.status }}
+            </div>
+          </div>
+        </div>
+
+        <div class="reservation-footer">
+          <button class="btn btn-sm btn-primary" (click)="viewReservationDetails(reservation)">
+            <i class="fa fa-eye"></i> Ver detalles
+          </button>
+          <button class="btn btn-sm btn-danger" *ngIf="canCancelReservation(reservation)"
+                  (click)="cancelReservation(reservation)">
+            <i class="fa fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-toast" *ngIf="showSuccessMessage">
+    <i class="fa fa-check-circle"></i> {{ successMessage }}
+  </div>
+</div>

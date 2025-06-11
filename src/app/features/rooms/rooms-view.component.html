@@ -69,6 +69,9 @@
         <div class="success-message" *ngIf="successMessage">
           <i class="fas fa-check-circle"></i>
           <span>{{ successMessage }}</span>
+          <button *ngIf="createdReservationId" class="btn-inline-payment" (click)="goToPayment()">
+            <i class="fas fa-credit-card"></i> Proceder al pago
+          </button>
         </div>
 
         <!-- Mensaje de carga durante verificación de disponibilidad -->
@@ -88,8 +91,8 @@
             </button>
 
             <span class="calendar-title">
-                    {{ selectedDate | date:'MMMM yyyy' }}
-                  </span>
+                            {{ selectedDate | date:'MMMM yyyy' }}
+                          </span>
 
             <button *ngIf="calendarView === 'week'" (click)="navigateWeek(1)" class="btn-calendar-nav">
               <i class="fas fa-chevron-right"></i>
@@ -115,6 +118,9 @@
           </div>
         </div>
 
+        <!-- Vistas del calendario permanecen iguales -->
+        <!-- ... código del calendario existente ... -->
+
         <!-- Vista semanal del calendario -->
         <div *ngIf="calendarView === 'week'" class="week-calendar">
           <div class="week-days">
@@ -135,7 +141,7 @@
                   [class.available]="slot.available"
                   [class.unavailable]="!slot.available"
                   [class.selected]="day.date === bookingForm.get('bookingDate')?.value &&
-                                         slot.time === bookingForm.get('startTime')?.value"
+                                                       slot.time === bookingForm.get('startTime')?.value"
                   (click)="selectTimeSlot(day, slot)">
                   {{ slot.time }}
                 </div>
@@ -159,8 +165,8 @@
               [class.other-month]="!day.isCurrentMonth"
               [class.today]="day.isToday"
               [class.has-events]="day.hasEvents"
-                           [class.selected]="day.isCurrentMonth &&
-                                     isSelectedDay(day)"
+              [class.selected]="day.isCurrentMonth &&
+                                                   isSelectedDay(day)"
               (click)="day.isCurrentMonth && selectMonthDay(day)">
               {{ day.date }}
               <div class="event-indicator" *ngIf="day.hasEvents"></div>
@@ -275,8 +281,8 @@
       <button class="btn-back" (click)="onBack()">
         <i class="fas fa-arrow-left"></i> Volver a la lista
       </button>
-      <button class="btn-reserve-main" *ngIf="room.available && !showBookingForm" (click)="toggleBookingForm()">
-        <i class="fas fa-calendar-plus"></i> Reservar sala
+      <button *ngIf="createdReservationId" class="btn-payment" (click)="goToPayment()">
+        <i class="fas fa-credit-card"></i> Proceder al pago
       </button>
       <button class="btn-edit" *ngIf="isAdmin" (click)="onEdit()">
         <i class="fas fa-edit"></i> Editar sala

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { UserRoutingModule } from './user-routing-module';
+import { ReservationsRoutingModule } from './reservations-routing-module';
 
 
 @NgModule({
   declarations: [],
   imports: [
-    UserRoutingModule
+    ReservationsRoutingModule
   ]
 })
-export class UserModule { }
+export class ReservationsModule { }

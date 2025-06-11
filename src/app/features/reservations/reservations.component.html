@@ -1,1 +1,33 @@
-<p>reservations works!</p>
+<div class="reservations-container">
+  <h2><i class="fa fa-calendar-check"></i> Mis Reservas</h2>
+
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="loading" class="loading">Cargando reservas...</div>
+
+  <div *ngIf="!loading && reservations.length === 0 && !errorMessage" class="no-data">
+    No tienes reservas registradas.
+  </div>
+
+  <div *ngIf="!loading && reservations.length > 0" class="reservations-list">
+    <div class="reservation-card" *ngFor="let r of reservations">
+      <div class="reservation-header">
+        <span class="reservation-title">
+          <i class="fa fa-id-badge"></i> Reserva #{{ r.reservationId }}
+        </span>
+        <span class="reservation-date">
+          <i class="fa fa-clock"></i>
+          {{ r.startDate | date:'short' }} - {{ r.endDate | date:'shortTime' }}
+        </span>
+      </div>
+      <div class="reservation-details">
+        <span><i class="fa fa-user"></i> Usuario #{{ r.userId }}</span>
+        <span><i class="fa fa-tag"></i> {{ r.reservationType }}</span>
+        <span *ngIf="r.status"><i class="fa fa-info-circle"></i> {{ r.status }}</span>
+        <span *ngIf="r.depositPaymentId"><i class="fa fa-money-bill"></i> Depósito: {{ r.depositPaymentId }}</span>
+        <button class="details-btn" (click)="verDetalles(r)">
+          <i class="fa fa-eye"></i> Ver más detalles
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

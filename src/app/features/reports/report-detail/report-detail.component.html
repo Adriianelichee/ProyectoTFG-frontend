@@ -1,0 +1,133 @@
+<div class="report-container">
+  <div class="report-header">
+    <h1>Reportar un problema</h1>
+    <p class="subtitle">Complete el formulario para informar sobre cualquier incidencia</p>
+  </div>
+
+  <!-- Mensaje de éxito -->
+  <div class="success-message" *ngIf="submitSuccess">
+    <div class="success-content">
+      <i class="fas fa-check-circle"></i>
+      <div>
+        <h3>¡Reporte enviado correctamente!</h3>
+        <p>Su problema ha sido registrado. Será redirigido en unos segundos...</p>
+      </div>
+    </div>
+    <button type="button" class="btn-outline" (click)="resetForm()">Crear otro reporte</button>
+  </div>
+
+  <!-- Formulario de reporte -->
+  <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" *ngIf="!submitSuccess" class="report-form">
+    <!-- Mensaje de error -->
+    <div class="error-alert" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Categoría del problema -->
+    <div class="form-group">
+      <label>Tipo de problema</label>
+      <div class="category-selector">
+        <div
+          *ngFor="let cat of categories"
+          class="category-option"
+          [class.selected]="reportForm.get('category')?.value === cat.value"
+          (click)="selectCategory(cat.value)">
+          <i class="fas" [ngClass]="cat.icon"></i>
+          <span>{{ cat.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Descripción del problema -->
+    <div class="form-group">
+      <label for="description">Descripción del problema <span class="required">*</span></label>
+      <div class="textarea-wrapper">
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Describa el problema en detalle..."
+          rows="5">
+        </textarea>
+        <span class="char-counter" [class.warning]="descriptionCharsLeft < 50">
+          {{ descriptionCharsLeft }} caracteres restantes
+        </span>
+      </div>
+      <div class="form-error" *ngIf="reportForm.get('description')?.touched && reportForm.get('description')?.errors">
+        <span *ngIf="reportForm.get('description')?.errors?.['required']">La descripción es obligatoria.</span>
+        <span *ngIf="reportForm.get('description')?.errors?.['minlength']">La descripción debe tener al menos 10 caracteres.</span>
+      </div>
+    </div>
+
+    <!-- Sección de ubicación -->
+    <div class="location-section">
+      <h3>Ubicación del problema</h3>
+
+      <!-- Selección de piso -->
+      <div class="form-group">
+        <label for="floorId">Piso <span class="required">*</span></label>
+        <div class="select-wrapper">
+          <select id="floorId" formControlName="floorId">
+            <option [ngValue]="null">Seleccione un piso</option>
+            <option *ngFor="let floor of floors" [ngValue]="floor.floorId">
+              {{ floor.floorName }}
+            </option>
+          </select>
+          <i class="fas" [ngClass]="isLoadingFloors ? 'fa-spinner fa-spin' : 'fa-chevron-down'"></i>
+        </div>
+        <div class="form-error"
+             *ngIf="reportForm.get('floorId')?.touched && reportForm.get('floorId')?.errors?.['required']">
+          Debe seleccionar un piso.
+        </div>
+      </div>
+
+      <!-- Selección de sala -->
+      <div class="form-group">
+        <label for="roomId">Sala (opcional)</label>
+        <div class="select-wrapper">
+          <select
+            id="roomId"
+            formControlName="roomId"
+            [disabled]="!reportForm.get('floorId')?.value || isLoadingRooms">
+            <option [ngValue]="null">Seleccione una sala</option>
+            <option *ngFor="let room of rooms" [ngValue]="room.roomId">
+              {{ room.roomName }}
+            </option>
+          </select>
+          <i class="fas" [ngClass]="isLoadingRooms ? 'fa-spinner fa-spin' : 'fa-chevron-down'"></i>
+        </div>
+      </div>
+
+      <!-- Selección de estación de trabajo -->
+      <div class="form-group">
+        <label for="workstationId">Estación de trabajo (opcional)</label>
+        <div class="select-wrapper">
+          <select
+            id="workstationId"
+            formControlName="workstationId"
+            [disabled]="!reportForm.get('floorId')?.value || isLoadingWorkstations">
+            <option [ngValue]="null">Seleccione una estación de trabajo</option>
+            <option *ngFor="let ws of workstations" [ngValue]="ws.workstationId">
+              Estación {{ ws.workstationId }}
+            </option>
+          </select>
+          <i class="fas" [ngClass]="isLoadingWorkstations ? 'fa-spinner fa-spin' : 'fa-chevron-down'"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-actions">
+      <button type="button" class="btn-outline" routerLink="/reports">
+        <i class="fas fa-arrow-left"></i> Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="reportForm.invalid || isSubmitting">
+        <i class="fas" [ngClass]="isSubmitting ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+        {{ isSubmitting ? 'Enviando...' : 'Enviar reporte' }}
+      </button>
+    </div>
+  </form>
+</div>

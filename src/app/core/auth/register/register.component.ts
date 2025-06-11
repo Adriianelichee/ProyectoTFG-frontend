@@ -51,7 +51,6 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.checkAdminAccess();
     this.loadCompanies();
     this.loadProviders();
 
@@ -60,14 +59,6 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // Verificar que solo los administradores puedan acceder
-  checkAdminAccess(): void {
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser || currentUser.role !== 'admin') {
-      this.router.navigate(['/home']);
-      this.errorMessage = 'Solo los administradores pueden registrar nuevos usuarios';
-    }
-  }
 
   updateFormBasedOnRole(role: string): void {
     // Resetear validadores
@@ -160,7 +151,21 @@ export class RegisterComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error al registrarse:', err);
-        this.errorMessage = 'No se pudo completar el registro';
+
+        // Verificar si el error es específicamente de correo duplicado
+        if (err.error && (
+          err.error.message?.includes('email already exists') ||
+          err.error.message?.includes('correo ya existe') ||
+          err.error.message?.includes('duplicate') ||
+          err.error.message?.includes('ya está en uso') ||
+          err.status === 409)) {
+          this.errorMessage = 'Este correo electrónico ya está registrado. Por favor utiliza otro.';
+          // Marcar el campo de email como inválido
+          this.emailControl.setErrors({'emailExists': true});
+        } else {
+          this.errorMessage = 'No se pudo completar el registro';
+        }
+
         this.loading = false;
       },
     });

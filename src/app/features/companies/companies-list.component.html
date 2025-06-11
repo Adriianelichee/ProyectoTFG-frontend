@@ -1,12 +1,18 @@
-<!-- src/app/features/companies/companies-list.component.html -->
 <div class="companies-list-container">
   <h2>Listado de Empresas</h2>
-  <button class="btn-create" (click)="onCreate()">+ Nueva Empresa</button>
 
-  <div *ngIf="loading" class="loading">Cargando empresas...</div>
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
-  <table *ngIf="!loading && companies.length > 0" class="companies-table">
+  <button
+    class="btn-create"
+    (click)="onCreate()"
+    *ngIf="canEdit && !loading"
+  >+ Nueva Empresa
+  </button>
+
+  <div *ngIf="loading" class="loading">Cargando empresas...</div>
+
+  <table *ngIf="canEdit && !loading && companies.length > 0" class="companies-table">
     <thead>
     <tr>
       <th>ID</th>
@@ -32,7 +38,7 @@
     </tbody>
   </table>
 
-  <div *ngIf="!loading && companies.length === 0" class="no-data">
+  <div *ngIf="canEdit && !loading && companies.length === 0" class="no-data">
     No hay empresas registradas.
   </div>
 </div>

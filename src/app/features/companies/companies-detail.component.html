@@ -1,76 +1,84 @@
 <div class="companies-detail-container">
-  <h2>{{ isEdit ? 'Editar Empresa' : 'Nueva Empresa' }}</h2>
-
-  <div *ngIf="loading" class="loading">Cargando datos...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-
-  <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <div class="form-group">
-      <label for="companyName">Nombre de la Empresa</label>
-      <input id="companyName" formControlName="companyName" />
-      <div
-        *ngIf="companyNameControl.invalid && companyNameControl.touched"
-        class="validation-error"
-      >
-        <small *ngIf="companyNameControl.hasError('required')">
-          El nombre es obligatorio.
-        </small>
-        <small *ngIf="companyNameControl.hasError('maxLength')">
-          Máx. 45 caracteres.
-        </small>
+  <div class="detail-card">
+    <div class="detail-header">
+      <h2>
+        <i class="fa fa-building" style="margin-right:10px;"></i>
+        {{ isEdit ? 'Editar Empresa' : 'Nueva Empresa' }}
+      </h2>
+      <div class="detail-icon">
+        <i class="fa fa-industry"></i>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="address">Dirección</label>
-      <input id="address" formControlName="address" />
-      <div *ngIf="addressControl.invalid && addressControl.touched" class="validation-error">
-        <small *ngIf="addressControl.hasError('required')">
-          La dirección es obligatoria.
-        </small>
-        <small *ngIf="addressControl.hasError('maxLength')">
-          Máx. 100 caracteres.
-        </small>
-      </div>
-    </div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
-    <div class="form-group">
-      <label for="phone">Teléfono</label>
-      <input id="phone" formControlName="phone" />
-      <div *ngIf="phoneControl.invalid && phoneControl.touched" class="validation-error">
-        <small *ngIf="phoneControl.hasError('required')">
-          El teléfono es obligatorio.
-        </small>
-        <small *ngIf="phoneControl.hasError('maxLength')">
-          Máx. 20 caracteres.
-        </small>
+    <form
+      [formGroup]="companyForm"
+      (ngSubmit)="onSubmit()"
+      *ngIf="canEdit && !loading"
+      autocomplete="off"
+    >
+      <div class="form-group">
+        <label for="companyName">Nombre de la Empresa</label>
+        <div class="input-container">
+          <span class="input-icon"><i class="fa fa-building"></i></span>
+          <input id="companyName" formControlName="companyName" [disabled]="!canEdit"/>
+        </div>
+        <div *ngIf="companyNameControl.invalid && companyNameControl.touched" class="validation-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span *ngIf="companyNameControl.hasError('required')">El nombre es obligatorio.</span>
+          <span *ngIf="companyNameControl.hasError('maxLength')">Máx. 45 caracteres.</span>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="contactEmail">Email de Contacto</label>
-      <input id="contactEmail" formControlName="contactEmail" />
-      <div
-        *ngIf="contactEmailControl.invalid && contactEmailControl.touched"
-        class="validation-error"
-      >
-        <small *ngIf="contactEmailControl.hasError('required')">
-          El email es obligatorio.
-        </small>
-        <small *ngIf="contactEmailControl.hasError('email')">
-          Email inválido.
-        </small>
-        <small *ngIf="contactEmailControl.hasError('maxLength')">
-          Máx. 100 caracteres.
-        </small>
+      <div class="form-group">
+        <label for="address">Dirección</label>
+        <div class="input-container">
+          <span class="input-icon"><i class="fa fa-map-marker-alt"></i></span>
+          <input id="address" formControlName="address" [disabled]="!canEdit"/>
+        </div>
+        <div *ngIf="addressControl.invalid && addressControl.touched" class="validation-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span *ngIf="addressControl.hasError('required')">La dirección es obligatoria.</span>
+          <span *ngIf="addressControl.hasError('maxLength')">Máx. 100 caracteres.</span>
+        </div>
       </div>
-    </div>
 
-    <div class="buttons">
-      <button class="btn-save" type="submit" [disabled]="companyForm.invalid">
-        {{ isEdit ? 'Actualizar' : 'Crear' }}
-      </button>
-      <button class="btn-cancel" type="button" (click)="onCancel()">Cancelar</button>
-    </div>
-  </form>
+      <div class="form-group">
+        <label for="phone">Teléfono</label>
+        <div class="input-container">
+          <span class="input-icon"><i class="fa fa-phone"></i></span>
+          <input id="phone" formControlName="phone" [disabled]="!canEdit"/>
+        </div>
+        <div *ngIf="phoneControl.invalid && phoneControl.touched" class="validation-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span *ngIf="phoneControl.hasError('required')">El teléfono es obligatorio.</span>
+          <span *ngIf="phoneControl.hasError('maxLength')">Máx. 20 caracteres.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="contactEmail">Email de Contacto</label>
+        <div class="input-container">
+          <span class="input-icon"><i class="fa fa-envelope"></i></span>
+          <input id="contactEmail" formControlName="contactEmail" [disabled]="!canEdit"/>
+        </div>
+        <div *ngIf="contactEmailControl.invalid && contactEmailControl.touched" class="validation-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span *ngIf="contactEmailControl.hasError('required')">El email es obligatorio.</span>
+          <span *ngIf="contactEmailControl.hasError('email')">Email inválido.</span>
+          <span *ngIf="contactEmailControl.hasError('maxLength')">Máx. 100 caracteres.</span>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-save" type="submit" [disabled]="companyForm.invalid || !canEdit">
+          <i class="fa fa-save"></i> {{ isEdit ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

@@ -30,4 +30,7 @@ export class ReservationService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  getByUser(id: number): Observable<ReservationOutDto[]> {
+    return this.http.get<ReservationOutDto[]>(`${this.baseUrl}/user/${id}`);
+  }
 }

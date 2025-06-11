@@ -11,8 +11,8 @@ import {DetailReservationRoomService} from '../../core/api/detail-reservation-ro
 import {ReservationInDto} from '../../core/models/reservation-in-dto';
 import {DetailReservationRoomInDto} from '../../core/models/detail-reservation-room-in-dto';
 import {DetailReservationRoomOutDto} from '../../core/models/detail-reservation-room-out-dto';
-import {finalize, switchMap} from 'rxjs/operators';
 import {forkJoin, Observable, of} from 'rxjs';
+import { finalize, switchMap, map } from 'rxjs/operators';
 
 interface TimeSlot {
   time: string;
@@ -65,6 +65,8 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
   bookedHours?: number = 45;
   totalBookings?: number = 12;
   averageRating?: number = 4.7;
+  createdReservationId?: number;
+
 
   // Control de visualización de calendario
   calendarView = 'week'; // 'week' o 'month'
@@ -233,7 +235,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Añadimos un método para actualizar cuando cambie la duración
+  // Añadimos un métod para actualizar cuando cambie la duración
   onDurationChange(): void {
     const dateStr = this.bookingForm.get('bookingDate')?.value;
     if (!dateStr || !this.roomId) return;
@@ -406,7 +408,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  isSelectedDay(day: {date: number, month: number, isCurrentMonth: boolean}): boolean {
+  isSelectedDay(day: { date: number, month: number, isCurrentMonth: boolean }): boolean {
     if (!day.isCurrentMonth) return false;
 
     return this.isSameDay(
@@ -415,7 +417,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     );
   }
 
-  selectMonthDay(day: {date: number, month: number, isCurrentMonth: boolean}): void {
+  selectMonthDay(day: { date: number, month: number, isCurrentMonth: boolean }): void {
     if (!day.isCurrentMonth) return;
 
     // Crear objeto de fecha para el día seleccionado
@@ -667,26 +669,48 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
             startTime: startDate,
             endTime: endDate
           };
-          return this.detailReservationRoomService.create(detailData);
+
+          // Guardar el ID de la reserva para redirigir al pago
+          const createdReservationId = reservation.reservationId;
+
+          return this.detailReservationRoomService.create(detailData).pipe(
+            map(detail => ({detail, reservationId: createdReservationId}))
+          );
         }),
         finalize(() => {
           this.reservationLoading = false;
         })
       )
       .subscribe({
-        next: () => {
-          this.successMessage = 'Reserva realizada correctamente';
+        next: (result) => {
+          this.successMessage = 'Reserva realizada correctamente. Redirigiendo a la página de pago...';
+
+          // Redirigir al usuario a la página de pago después de un breve retraso
           setTimeout(() => {
-            this.showBookingForm = false;
-            // Actualizar calendario y disponibilidad
-            this.loadExistingReservations();
-          }, 2000);
+            this.router.navigate(['/payments/process'], {
+              queryParams: {
+                reservationId: result.reservationId,
+                type: 'room'
+              }
+            });
+          }, 1500);
         },
         error: (err) => {
           console.error('Error al crear reserva:', err);
           this.errorMessage = 'No se pudo completar la reserva. Por favor intenta de nuevo.';
         }
       });
+  }
+
+  goToPayment(): void {
+    if (this.createdReservationId) {
+      this.router.navigate(['/payments/process'], {
+        queryParams: {
+          reservationId: this.createdReservationId,
+          type: 'room'
+        }
+      });
+    }
   }
 
   onBack(): void {

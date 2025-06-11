@@ -1,9 +1,9 @@
-// src/app/features/companies/companies-list.component.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule} from '@angular/common';
-import { CompanyService } from '../../core/api/company.service';
-import { CompanyOutDto } from '../../core/models/company-out-dto';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CompanyService} from '../../core/api/company.service';
+import {CompanyOutDto} from '../../core/models/company-out-dto';
+import {Router} from '@angular/router';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-companies-list',
@@ -16,13 +16,22 @@ export class CompaniesListComponent implements OnInit {
   companies: CompanyOutDto[] = [];
   loading = false;
   errorMessage: string | null = null;
+  canEdit = false;
 
   constructor(
     private companyService: CompanyService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private authService: AuthService
+  ) {
+  }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
+    const user = this.authService.getCurrentUser();
+    this.canEdit = !!user && (user.role === 'admin' || user.role === 'secretary');
+    if (!this.canEdit) {
+      this.router.navigate(['/']);
+      return;
+    }
     this.loadCompanies();
   }
 
@@ -43,14 +52,19 @@ export class CompaniesListComponent implements OnInit {
   }
 
   onCreate(): void {
-    void this.router.navigate(['/companies/new']);
+    if (this.canEdit) {
+      void this.router.navigate(['/companies/new']);
+    }
   }
 
   onEdit(companyId: number): void {
-    void this.router.navigate([`/companies/${companyId}`]);
+    if (this.canEdit) {
+      void this.router.navigate([`/companies/${companyId}`]);
+    }
   }
 
   onDelete(companyId: number): void {
+    if (!this.canEdit) return;
     if (!confirm('¿Estás seguro de eliminar esta empresa?')) return;
     this.companyService.delete(companyId).subscribe({
       next: () => this.loadCompanies(),

@@ -1,1 +1,190 @@
-<p>payments works!</p>
+<div class="payment-container">
+  <div class="payment-card">
+    <div class="payment-header">
+      <h2>Procesar Pago</h2>
+      <div class="payment-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+    </div>
+
+    <!-- Mensaje de carga -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Procesando...</span>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMessage" class="error-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="successMessage" class="success-container">
+      <i class="fas fa-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <div class="payment-content" *ngIf="itemDetails && !loading && !successMessage">
+      <!-- Detalles del elemento reservado -->
+      <div class="reservation-details">
+        <h3>Detalles de la {{ itemDetails.reservationType }}</h3>
+
+        <!-- Información específica según tipo -->
+        <div class="details-card">
+          <div *ngIf="itemType === 'workstation'" class="detail-item">
+            <span class="detail-label">Estación:</span>
+            <span class="detail-value">{{ itemDetails.workstationName || 'Estación ' + itemDetails.workstationId }}</span>
+          </div>
+
+          <div *ngIf="itemType === 'room'" class="detail-item">
+            <span class="detail-label">Sala:</span>
+            <span class="detail-value">{{ itemDetails.roomName }}</span>
+          </div>
+
+          <div *ngIf="itemType === 'service'" class="detail-item">
+            <span class="detail-label">Servicio:</span>
+            <span class="detail-value">{{ itemDetails.serviceName }}</span>
+          </div>
+
+          <div *ngIf="itemDetails.description" class="detail-item">
+            <span class="detail-label">Descripción:</span>
+            <span class="detail-value description">{{ itemDetails.description }}</span>
+          </div>
+
+          <div *ngIf="itemDetails.startDate" class="detail-item">
+            <span class="detail-label">Fecha inicio:</span>
+            <span class="detail-value">{{ itemDetails.startDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div *ngIf="itemDetails.endDate" class="detail-item">
+            <span class="detail-label">Fecha fin:</span>
+            <span class="detail-value">{{ itemDetails.endDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div *ngIf="itemDetails.duration" class="detail-item">
+            <span class="detail-label">Duración:</span>
+            <span class="detail-value">{{ itemDetails.duration }} horas</span>
+          </div>
+        </div>
+
+        <div class="total-amount">
+          <span class="amount-label">Importe total:</span>
+          <span class="amount-value">{{ totalAmount | currency:'EUR':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Formulario de pago -->
+      <form [formGroup]="paymentForm" (ngSubmit)="processPayment()" class="payment-form">
+        <h3>Detalles de Pago</h3>
+
+        <div class="form-group">
+          <label>Método de pago</label>
+          <div class="payment-methods">
+            <div *ngFor="let method of paymentMethods" class="payment-method-option">
+              <input type="radio" [id]="method.value" formControlName="paymentMethod" [value]="method.value">
+              <label [for]="method.value">
+                <i class="fab" [ngClass]="method.icon"></i>
+                {{ method.label }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de tarjeta de crédito -->
+        <div *ngIf="showCardDetails" class="credit-card-details">
+          <div class="form-group">
+            <label for="cardNumber">Número de tarjeta</label>
+            <div class="input-container">
+              <i class="fas fa-credit-card input-icon"></i>
+              <input id="cardNumber" formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16"/>
+            </div>
+            <small class="error-text"
+                  *ngIf="cardNumberControl?.invalid && cardNumberControl?.touched">
+              Ingresa un número de tarjeta válido (16 dígitos)
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="cardHolder">Titular de la tarjeta</label>
+            <div class="input-container">
+              <i class="fas fa-user input-icon"></i>
+              <input id="cardHolder" formControlName="cardHolder" placeholder="Nombre como aparece en la tarjeta"/>
+            </div>
+            <small class="error-text"
+                  *ngIf="cardHolderControl?.invalid && cardHolderControl?.touched">
+              El nombre del titular es obligatorio
+            </small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half-width">
+              <label for="expiryDate">Fecha de expiración</label>
+              <div class="input-container">
+                <i class="fas fa-calendar-alt input-icon"></i>
+                <input id="expiryDate" formControlName="expiryDate" placeholder="MM/AA" maxlength="5"/>
+              </div>
+              <small class="error-text"
+                    *ngIf="expiryDateControl?.invalid && expiryDateControl?.touched">
+                Formato inválido (MM/AA)
+              </small>
+            </div>
+
+            <div class="form-group half-width">
+              <label for="cvv">CVV</label>
+              <div class="input-container">
+                <i class="fas fa-lock input-icon"></i>
+                <input id="cvv" formControlName="cvv" type="password" placeholder="123" maxlength="3"/>
+              </div>
+              <small class="error-text"
+                    *ngIf="cvvControl?.invalid && cvvControl?.touched">
+                CVV inválido (3 dígitos)
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información para otros métodos de pago -->
+        <div *ngIf="paymentForm.get('paymentMethod')?.value === 'bank_transfer'" class="payment-instructions">
+          <div class="instruction-box">
+            <h4><i class="fas fa-info-circle"></i> Instrucciones para transferencia bancaria</h4>
+            <p>Realiza una transferencia al siguiente número de cuenta:</p>
+            <p class="account-number">ES91 2100 0418 4502 0005 1332</p>
+            <p>Concepto: <strong>ID{{ reservationId || serviceId }}</strong></p>
+            <p>Una vez realizada, recibirás confirmación por correo electrónico.</p>
+          </div>
+        </div>
+
+        <div *ngIf="paymentForm.get('paymentMethod')?.value === 'paypal'" class="payment-instructions">
+          <div class="instruction-box">
+            <h4><i class="fab fa-paypal"></i> Pago con PayPal</h4>
+            <p>Serás redirigido a PayPal para completar el pago de forma segura.</p>
+          </div>
+        </div>
+
+        <div class="form-group-checkbox">
+          <label class="checkbox-container">
+            <input type="checkbox" formControlName="acceptTerms"/>
+            <span class="checkmark"></span>
+            <span class="checkbox-label">Acepto los términos y condiciones de pago</span>
+          </label>
+          <small class="error-text"
+                *ngIf="paymentForm.get('acceptTerms')?.invalid && paymentForm.get('acceptTerms')?.touched">
+            Debes aceptar los términos y condiciones
+          </small>
+        </div>
+
+        <div class="payment-actions">
+          <button type="button" class="btn-cancel" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i> Volver
+          </button>
+          <button type="submit" class="btn-pay" [disabled]="paymentForm.invalid || loading">
+            <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+            <i class="fas fa-lock" *ngIf="!loading"></i>
+            {{ loading ? 'Procesando...' : 'Confirmar pago' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

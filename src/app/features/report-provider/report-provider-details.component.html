@@ -1,0 +1,141 @@
+<div class="provider-details-container">
+  <div class="provider-card">
+    <div class="card-header">
+      <h2
+        class="card-title">{{ isEditMode ? 'Editar Proveedor de Servicios' : 'Registrar Nuevo Proveedor de Servicios' }}</h2>
+      <p class="card-subtitle">Complete la información del proveedor que atenderá reportes de problemas</p>
+    </div>
+
+    <form [formGroup]="providerForm" (ngSubmit)="onSubmit()" class="provider-form">
+      <div class="form-message" *ngIf="successMessage">
+        <div class="success-message">
+          <i class="fas fa-check-circle"></i> {{ successMessage }}
+        </div>
+      </div>
+
+      <div class="form-message" *ngIf="errorMessage">
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+        </div>
+      </div>
+
+      <!-- Nombre del proveedor -->
+      <div class="form-group">
+        <label for="providerName">Nombre del proveedor *</label>
+        <div class="input-with-icon">
+          <i class="fas fa-building"></i>
+          <input
+            id="providerName"
+            type="text"
+            formControlName="providerName"
+            placeholder="Ingrese el nombre de la empresa"
+          >
+        </div>
+        <div class="form-error"
+             *ngIf="formControls['providerName'].invalid && (formControls['providerName'].dirty || formControls['providerName'].touched)">
+          <span *ngIf="formControls['providerName'].errors?.['required']">El nombre del proveedor es obligatorio.</span>
+          <span
+            *ngIf="formControls['providerName'].errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</span>
+        </div>
+      </div>
+
+      <!-- Especialidad -->
+      <div class="form-group">
+        <label for="specialty">Especialidad *</label>
+        <div class="input-with-icon">
+          <i class="fas fa-tools"></i>
+          <select id="specialty" formControlName="specialty">
+            <option value="">Seleccione una especialidad</option>
+            <option value="cleaning">Limpieza</option>
+            <option value="maintenance">Mantenimiento</option>
+            <option value="security">Seguridad</option>
+            <option value="technology">Tecnología</option>
+          </select>
+        </div>
+        <div class="form-error"
+             *ngIf="formControls['specialty'].invalid && (formControls['specialty'].dirty || formControls['specialty'].touched)">
+          <span *ngIf="formControls['specialty'].errors?.['required']">Debe seleccionar una especialidad.</span>
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group">
+        <label for="phone">Teléfono de contacto *</label>
+        <div class="input-with-icon">
+          <i class="fas fa-phone"></i>
+          <input
+            id="phone"
+            type="tel"
+            formControlName="phone"
+            placeholder="Ingrese el teléfono"
+          >
+        </div>
+        <div class="form-error"
+             *ngIf="formControls['phone'].invalid && (formControls['phone'].dirty || formControls['phone'].touched)">
+          <span *ngIf="formControls['phone'].errors?.['required']">El teléfono es obligatorio.</span>
+          <span *ngIf="formControls['phone'].errors?.['pattern']">Formato de teléfono inválido.</span>
+        </div>
+      </div>
+
+      <!-- Email de contacto -->
+      <div class="form-group">
+        <label for="contactEmail">Email de contacto *</label>
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input
+            id="contactEmail"
+            type="email"
+            formControlName="contactEmail"
+            placeholder="Ingrese el correo electrónico"
+          >
+        </div>
+        <div class="form-error"
+             *ngIf="formControls['contactEmail'].invalid && (formControls['contactEmail'].dirty || formControls['contactEmail'].touched)">
+          <span *ngIf="formControls['contactEmail'].errors?.['required']">El email es obligatorio.</span>
+          <span *ngIf="formControls['contactEmail'].errors?.['email']">Formato de email inválido.</span>
+        </div>
+      </div>
+
+      <!-- Información adicional (opcional) -->
+      <div class="form-group">
+        <label for="description">Descripción del servicio <span class="optional">(opcional)</span></label>
+        <div class="input-with-icon">
+          <i class="fas fa-info-circle"></i>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="3"
+            placeholder="Breve descripción de los servicios que ofrece"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Horario de atención (opcional) -->
+      <div class="form-group">
+        <label for="serviceHours">Horario de atención <span class="optional">(opcional)</span></label>
+        <div class="input-with-icon">
+          <i class="fas fa-clock"></i>
+          <input
+            id="serviceHours"
+            type="text"
+            formControlName="serviceHours"
+            placeholder="Ej: Lunes a Viernes, 9:00 - 18:00"
+          >
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="goBack()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="providerForm.invalid || isSubmitting">
+          <i class="fas" [ngClass]="{'fa-spinner fa-spin': isSubmitting, 'fa-save': !isSubmitting}"></i>
+          {{ isSubmitting ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Registrar') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

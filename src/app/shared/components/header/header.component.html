@@ -10,19 +10,38 @@
 
       <nav class="main-nav">
         <ul class="nav-list">
-          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
-          <li><a routerLink="/spaces" routerLinkActive="active">Espacios</a></li>
-          <li><a routerLink="/floors" routerLinkActive="active">Plantas</a></li>
-          <li><a routerLink="/pricing" routerLinkActive="active">Precios</a></li>
-          <li><a routerLink="/about" routerLinkActive="active">Nosotros</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active">Contacto</a></li>
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-home"></i> Inicio
+          </a></li>
+          <li><a routerLink="/floors" routerLinkActive="active">
+            <i class="fas fa-building"></i> Espacios
+          </a></li>
+          <li><a routerLink="/rooms" routerLinkActive="active">
+            <i class="fas fa-door-open"></i> Salas
+          </a></li>
+          <li><a routerLink="/workstations" routerLinkActive="active">
+            <i class="fas fa-laptop"></i> Estaciones
+          </a></li>
+          <li><a routerLink="/services" routerLinkActive="active">
+            <i class="fas fa-concierge-bell"></i> Servicios
+          </a></li>
+          <li><a routerLink="/payments" routerLinkActive="active">
+            <i class="fas fa-credit-card"></i> Pagos
+          </a></li>
+          <li><a routerLink="/about" routerLinkActive="active">
+            <i class="fas fa-info-circle"></i> Nosotros
+          </a></li>
+          <!-- Nueva opción para registrar usuarios (solo admin) -->
+          <li *ngIf="isAdmin"><a routerLink="/auth/register" routerLinkActive="active" class="admin-nav-action">
+            <i class="fas fa-user-plus"></i> Registrar Usuario
+          </a></li>
         </ul>
       </nav>
 
       <div class="auth-buttons">
         <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
-          <a routerLink="/auth/login" class="btn-login">Iniciar sesión</a>
-          <a routerLink="/auth/register" class="btn-register">Registrarse</a>
+          <a routerLink="/auth/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
+          <a routerLink="/auth/register" class="btn-register"><i class="fas fa-user-plus"></i> Registrarse</a>
         </ng-container>
         <ng-template #loggedInTemplate>
           <div class="user-menu">
@@ -32,10 +51,14 @@
               <i class="fas fa-chevron-down"></i>
             </button>
             <div class="user-dropdown" [class.show]="showUserMenu">
-              <a routerLink="/profile">Mi perfil</a>
-              <a routerLink="/reservations">Mis reservas</a>
-              <a routerLink="/settings">Configuración</a>
-              <a href="#" (click)="logout($event)">Cerrar sesión</a>
+              <a routerLink="/profile"><i class="fas fa-user"></i> Mi perfil</a>
+              <a routerLink="/reservations"><i class="fas fa-calendar-check"></i> Mis reservas</a>
+              <a routerLink="/payments"><i class="fas fa-credit-card"></i> Mis pagos</a>
+              <a routerLink="/settings"><i class="fas fa-cog"></i> Configuración</a>
+              <a *ngIf="isAdmin" routerLink="/auth/register" class="admin-action">
+                <i class="fas fa-user-plus"></i> Registrar usuario
+              </a>
+              <a href="#" (click)="logout($event)"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
             </div>
           </div>
         </ng-template>
@@ -48,17 +71,28 @@
 
     <div class="mobile-nav" [class.show]="showMobileMenu">
       <ul class="mobile-nav-list">
-        <li><a routerLink="/" (click)="closeMobileMenu()">Inicio</a></li>
-        <li><a routerLink="/spaces" (click)="closeMobileMenu()">Espacios</a></li>
-        <li><a routerLink="/floors" (click)="closeMobileMenu()">Plantas</a></li>
-        <li><a routerLink="/pricing" (click)="closeMobileMenu()">Precios</a></li>
-        <li><a routerLink="/about" (click)="closeMobileMenu()">Nosotros</a></li>
-        <li><a routerLink="/contact" (click)="closeMobileMenu()">Contacto</a></li>
-        <li *ngIf="!isLoggedIn"><a routerLink="/auth/login" (click)="closeMobileMenu()">Iniciar sesión</a></li>
-        <li *ngIf="!isLoggedIn"><a routerLink="/auth/register" (click)="closeMobileMenu()">Registrarse</a></li>
-        <li *ngIf="isLoggedIn"><a routerLink="/profile" (click)="closeMobileMenu()">Mi perfil</a></li>
-        <li *ngIf="isLoggedIn"><a routerLink="/reservations" (click)="closeMobileMenu()">Mis reservas</a></li>
-        <li *ngIf="isLoggedIn"><a href="#" (click)="logout($event); closeMobileMenu()">Cerrar sesión</a></li>
+        <li><a routerLink="/" (click)="closeMobileMenu()"><i class="fas fa-home"></i> Inicio</a></li>
+        <li><a routerLink="/floors" (click)="closeMobileMenu()"><i class="fas fa-building"></i> Espacios</a></li>
+        <li><a routerLink="/rooms" (click)="closeMobileMenu()"><i class="fas fa-door-open"></i> Salas</a></li>
+        <li><a routerLink="/workstations" (click)="closeMobileMenu()"><i class="fas fa-laptop"></i> Estaciones</a></li>
+        <li><a routerLink="/services" (click)="closeMobileMenu()"><i class="fas fa-concierge-bell"></i> Servicios</a>
+        </li>
+        <li><a routerLink="/payments" (click)="closeMobileMenu()"><i class="fas fa-credit-card"></i> Pagos</a></li>
+        <li><a routerLink="/about" (click)="closeMobileMenu()"><i class="fas fa-info-circle"></i> Nosotros</a></li>
+        <li *ngIf="!isLoggedIn"><a routerLink="/auth/login" (click)="closeMobileMenu()"><i
+          class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
+        <li *ngIf="!isLoggedIn"><a routerLink="/auth/register" (click)="closeMobileMenu()"><i
+          class="fas fa-user-plus"></i> Registrarse</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/profile" (click)="closeMobileMenu()"><i class="fas fa-user"></i> Mi
+          perfil</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/reservations" (click)="closeMobileMenu()"><i
+          class="fas fa-calendar-check"></i> Mis reservas</a></li>
+        <li *ngIf="isLoggedIn"><a routerLink="/payments" (click)="closeMobileMenu()"><i class="fas fa-credit-card"></i>
+          Mis pagos</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/auth/register" (click)="closeMobileMenu()" class="admin-action"><i
+          class="fas fa-user-plus"></i> Registrar usuario</a></li>
+        <li *ngIf="isLoggedIn"><a href="#" (click)="logout($event); closeMobileMenu()"><i
+          class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
       </ul>
     </div>
   </div>

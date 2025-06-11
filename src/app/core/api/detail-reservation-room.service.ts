@@ -19,6 +19,10 @@ export class DetailReservationRoomService {
     return this.http.get<DetailReservationRoomOutDto>(`${this.baseUrl}/${id}`);
   }
 
+  getByReservationId(reservationId: number): Observable<DetailReservationRoomOutDto> {
+    return this.http.get<DetailReservationRoomOutDto>(`${this.baseUrl}/reservation/${reservationId}`);
+  }
+
   create(dto: DetailReservationRoomInDto): Observable<DetailReservationRoomOutDto> {
     return this.http.post<DetailReservationRoomOutDto>(this.baseUrl, dto);
   }
