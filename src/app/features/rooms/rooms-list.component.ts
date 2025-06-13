@@ -4,6 +4,8 @@ import {FormsModule} from '@angular/forms';
 import {RoomService} from '../../core/api/room.service';
 import {RoomOutDto} from '../../core/models/room-out-dto';
 import {Router} from '@angular/router';
+import {AuthService} from '../../core/auth/auth.service';
+
 
 @Component({
   selector: 'app-rooms-list',
@@ -21,6 +23,7 @@ export class RoomsListComponent implements OnInit {
 
   constructor(
     private roomService: RoomService,
+    private authService: AuthService,
     private router: Router
   ) {
   }
@@ -44,6 +47,14 @@ export class RoomsListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  isAdminOrSecretary(): boolean {
+    const user = this.authService.getCurrentUser();
+    if (!user || !user.role) return false;
+
+    const role = user.role.toLowerCase();
+    return role === 'admin' || role === 'secretary';
   }
 
   filterRooms(): void {

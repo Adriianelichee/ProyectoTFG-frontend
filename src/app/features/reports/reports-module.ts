@@ -7,7 +7,6 @@ import { ReportsRoutingModule } from './reports-routing-module';
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
     ReportsRoutingModule
   ]
 })

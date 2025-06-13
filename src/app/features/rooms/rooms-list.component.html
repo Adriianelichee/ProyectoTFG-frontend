@@ -1,7 +1,7 @@
 <div class="rooms-list-container">
   <div class="rooms-header">
     <div class="title-section">
-      <h2>Gestión de Salas</h2>
+      <h2>Salas</h2>
       <p class="rooms-count">{{ rooms.length }} salas encontradas</p>
     </div>
 
@@ -16,7 +16,7 @@
           class="search-input">
       </div>
 
-      <button class="btn-create" (click)="onCreate()">
+      <button class="btn-create" (click)="onCreate()" *ngIf="isAdminOrSecretary()">
         <i class="fas fa-plus"></i> Nueva Sala
       </button>
     </div>
@@ -63,10 +63,10 @@
         <button class="btn-view" (click)="onView(room.roomId)">
           <i class="fas fa-eye"></i> Ver
         </button>
-        <button class="btn-edit" (click)="onEdit(room.roomId)">
+        <button class="btn-edit" *ngIf="isAdminOrSecretary()" (click)="onEdit(room.roomId)">
           <i class="fas fa-edit"></i> Editar
         </button>
-        <button class="btn-delete" (click)="onDelete(room.roomId)">
+        <button class="btn-delete" *ngIf="isAdminOrSecretary()" (click)="onDelete(room.roomId)">
           <i class="fas fa-trash"></i> Eliminar
         </button>
       </div>

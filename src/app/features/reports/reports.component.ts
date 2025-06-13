@@ -8,6 +8,7 @@ import {ReportOutDto, ReportStatus} from '../../core/models/report-out-dto';
 import {ReportProviderOutDto, ReportProviderSpecialty} from '../../core/models/report-provider-out-dto';
 import {AuthService} from '../../core/auth/auth.service';
 import {finalize} from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reports',
@@ -22,6 +23,9 @@ export class ReportsComponent implements OnInit {
   reports: ReportOutDto[] = [];
   filteredReports: ReportOutDto[] = [];
   providers: ReportProviderOutDto[] = [];
+
+  activeDropdown: number | null = null;
+
 
   isLoading = false;
   errorMessage = '';
@@ -65,7 +69,8 @@ export class ReportsComponent implements OnInit {
     private providerService: ReportProviderService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
   }
 
@@ -117,6 +122,7 @@ export class ReportsComponent implements OnInit {
     });
   }
 
+
   loadProviders(): void {
     this.providerService.getAll().subscribe({
       next: (providers) => {
@@ -126,6 +132,11 @@ export class ReportsComponent implements OnInit {
         console.error('Error cargando proveedores:', error);
       }
     });
+  }
+
+  verDetalleReporte(reportId: number): void {
+    console.log(`Navegando a reporte con ID: ${reportId}`);
+    this.router.navigate(['/reports', reportId]);
   }
 
   applyFilters(): void {
@@ -141,6 +152,41 @@ export class ReportsComponent implements OnInit {
     });
 
     this.cdr.markForCheck();
+  }
+
+  toggleStatusMenu(reportId: number): void {
+    if (this.activeDropdown === reportId) {
+      this.activeDropdown = null;
+    } else {
+      this.activeDropdown = reportId;
+    }
+    this.cdr.markForCheck();
+  }
+
+  updateStatus(report: ReportOutDto, newStatus: ReportStatus): void {
+    if (report.status === newStatus) {
+      this.activeDropdown = null;
+      return;
+    }
+
+    this.isLoading = true;
+    this.reportService.updateStatus(report.reportId, newStatus).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: () => {
+        report.status = newStatus;
+        this.activeDropdown = null;
+        // Mostrar mensaje de éxito
+        this.errorMessage = '';
+      },
+      error: (error) => {
+        this.errorMessage = `Error al actualizar el estado: ${error.message || 'Error desconocido'}`;
+        console.error('Error actualizando estado:', error);
+      }
+    });
   }
 
   resetFilters(): void {

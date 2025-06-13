@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ServiceService } from '../../core/api/service.service';
 import { ServiceOutDto } from '../../core/models/service-out-dto';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-services-list',
@@ -21,11 +22,16 @@ export class ServicesListComponent implements OnInit {
 
   constructor(
     private serviceService: ServiceService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadServices();
+  }
+
+  hasAdminAccess(): boolean {
+    return this.authService.hasRole('admin') || this.authService.hasRole('secretary');
   }
 
   loadServices(): void {

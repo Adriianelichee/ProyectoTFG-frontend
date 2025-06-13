@@ -1,0 +1,75 @@
+<div class="purchased-view-container">
+  <!-- Encabezado con título y botón de regreso -->
+  <div class="view-header">
+    <div class="back-button-container">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Volver
+      </button>
+    </div>
+    <h1 class="view-title">Detalle de Servicio Contratado</h1>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Cargando detalles del servicio...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="error-message">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ error }}</p>
+    <button class="btn-retry" (click)="loadPurchasedService()">Reintentar</button>
+  </div>
+
+  <!-- Contenido principal cuando hay datos -->
+  <div *ngIf="!loading && !error && purchasedService" class="service-details">
+    <div class="service-card main-info">
+      <div class="service-header">
+        <h2>{{ purchasedService.serviceName }}</h2>
+        <span class="service-id">ID: {{ purchasedService.purchasedServiceId }}</span>
+        <div class="service-status" [ngClass]="getStatusClass(purchasedService.status)">
+          <i class="fas fa-circle"></i> {{ getStatusLabel(purchasedService.status) }}
+        </div>
+      </div>
+
+      <div class="service-description">
+        <p>{{ purchasedService.description }}</p>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="service-card">
+        <h3><i class="fas fa-shopping-cart"></i> Detalles de Compra</h3>
+        <div class="detail-row">
+          <span class="detail-label">Fecha de compra:</span>
+          <span class="detail-value">{{ purchasedService.purchaseDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Precio:</span>
+          <span class="detail-value">{{ purchasedService.price | currency:'EUR' }}</span>
+        </div>
+        <div class="detail-row" *ngIf="purchasedService.expirationDate">
+          <span class="detail-label">Fecha de finalización:</span>
+          <span class="detail-value">{{ purchasedService.expirationDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Duración:</span>
+          <span class="detail-value">{{ getDuration() }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">ID de servicio:</span>
+          <span class="detail-value">{{ purchasedService.serviceId }}</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <h3><i class="fas fa-building"></i> Información de la empresa</h3>
+        <div class="detail-row">
+          <span class="detail-label">ID de empresa:</span>
+          <span class="detail-value">{{ purchasedService.companyId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

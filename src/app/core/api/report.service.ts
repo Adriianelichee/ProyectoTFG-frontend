@@ -30,4 +30,12 @@ export class ReportService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  updateStatus(id: number, status: string): Observable<ReportOutDto> {
+    return this.http.patch<ReportOutDto>(`${this.baseUrl}/${id}/status`, { status });
+  }
+
+  getByUserId(userId: number): Observable<ReportOutDto[]> {
+    return this.http.get<ReportOutDto[]>(`${this.baseUrl}/user/${userId}`);
+  }
 }

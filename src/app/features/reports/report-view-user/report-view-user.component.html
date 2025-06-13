@@ -1,0 +1,145 @@
+<div class="reports-container">
+  <div class="reports-header">
+    <div class="title-section">
+      <h2>Mis Reportes</h2>
+      <p class="reports-count">{{ filteredReports.length }} reportes encontrados</p>
+    </div>
+
+    <div class="actions-section">
+      <div class="status-filters">
+        <button
+          [class.active]="statusFilter === 'all'"
+          (click)="setStatusFilter('all')"
+          class="filter-btn">
+          Todos
+        </button>
+        <button
+          [class.active]="statusFilter === 'pending'"
+          (click)="setStatusFilter('pending')"
+          class="filter-btn pending">
+          Pendientes
+        </button>
+        <button
+          [class.active]="statusFilter === 'in_progress'"
+          (click)="setStatusFilter('in_progress')"
+          class="filter-btn progress">
+          En progreso
+        </button>
+        <button
+          [class.active]="statusFilter === 'resolved'"
+          (click)="setStatusFilter('resolved')"
+          class="filter-btn resolved">
+          Resueltos
+        </button>
+      </div>
+
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Buscar reporte..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()"
+          class="search-input">
+      </div>
+
+      <button class="btn-create" (click)="createNewReport()">
+        <i class="fas fa-plus"></i> Nuevo Reporte
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <span>Cargando reportes...</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-retry" (click)="loadUserReports()">Reintentar</button>
+  </div>
+
+  <div class="reports-table-container" *ngIf="!loading && filteredReports.length > 0">
+    <table class="reports-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+        <th>Ubicación</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let report of filteredReports">
+        <td>#{{ report.reportId }}</td>
+        <td class="description-cell">{{ report.description }}</td>
+        <td>
+            <span class="status-badge" [class]="getStatusClass(report.status)">
+              {{ getStatusText(report.status) }}
+            </span>
+        </td>
+        <td>{{ formatDate(report.reportDate) }}</td>
+        <td>
+          <span *ngIf="report.roomId">Sala #{{ report.roomId }}</span>
+          <span *ngIf="report.workstationId">Puesto #{{ report.workstationId }}</span>
+          <span>- Planta {{ report.floorId }}</span>
+        </td>
+        <td>
+          <button class="btn-view" (click)="viewReportDetails(report.reportId)">
+            <i class="fas fa-eye"></i> Ver
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="reports-grid" *ngIf="!loading && filteredReports.length > 0">
+    <div class="report-card" *ngFor="let report of filteredReports">
+      <div class="report-header">
+        <span class="report-id">#{{ report.reportId }}</span>
+        <span class="status-badge" [class]="getStatusClass(report.status)">
+          {{ getStatusText(report.status) }}
+        </span>
+      </div>
+
+      <div class="report-content">
+        <p class="report-description">{{ report.description }}</p>
+      </div>
+
+      <div class="report-details">
+        <div class="detail-item">
+          <i class="fas fa-calendar-alt"></i>
+          <span>{{ formatDate(report.reportDate) }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span *ngIf="report.roomId">Sala #{{ report.roomId }}</span>
+          <span *ngIf="report.workstationId">Puesto #{{ report.workstationId }}</span>
+          <span> - Planta {{ report.floorId }}</span>
+        </div>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn-view" (click)="viewReportDetails(report.reportId)">
+          <i class="fas fa-eye"></i> Ver detalles
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredReports.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-clipboard-list"></i>
+    </div>
+    <h3>No tienes reportes</h3>
+    <p *ngIf="searchTerm || statusFilter !== 'all'">No se encontraron reportes con los filtros aplicados</p>
+    <p *ngIf="!searchTerm && statusFilter === 'all'">Crea un nuevo reporte si tienes alguna incidencia que informar</p>
+    <button class="btn-create-empty" (click)="createNewReport()">
+      <i class="fas fa-plus"></i> Crear Nuevo Reporte
+    </button>
+  </div>
+</div>

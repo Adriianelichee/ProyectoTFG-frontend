@@ -4,6 +4,8 @@ import {RouterModule} from '@angular/router';
 import {AuthService} from '../../../core/auth/auth.service';
 import {Router} from '@angular/router';
 import {Subscription, interval} from 'rxjs';
+import {ReservationService} from '../../../core/api/reservation.service';
+
 
 @Component({
   selector: 'app-header',
@@ -14,7 +16,9 @@ import {Subscription, interval} from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
-  isAdmin = false; // Nueva propiedad para verificar si es admin
+  userHasReservationsOrServices = false;
+  isAdmin = false;
+  isSecretary = false;
   userName = 'Usuario';
   showUserMenu = false;
   showMobileMenu = false;
@@ -22,11 +26,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private reservationService: ReservationService,
     private router: Router
   ) {
   }
 
   ngOnInit(): void {
+    this.checkUserReservationsAndServices();
     // Verificar el estado de autenticación inicial
     this.checkAuthStatus();
 
@@ -35,6 +41,30 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.checkAuthStatus();
     });
   }
+
+  checkUserReservationsAndServices(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.userHasReservationsOrServices = false;
+      return;
+    }
+
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.userHasReservationsOrServices = false;
+      return;
+    }
+
+    // Verificar si el usuario tiene reservas
+    this.reservationService.getByUser(user.userId).subscribe({
+      next: (reservations) => {
+        this.userHasReservationsOrServices = reservations && reservations.length > 0;
+      },
+      error: () => {
+        this.userHasReservationsOrServices = false;
+      }
+    });
+  }
+
 
   ngOnDestroy(): void {
     // Limpiar la suscripción cuando el componente se destruye
@@ -50,7 +80,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn) {
       // Verificación de rol admin (asumiendo que hay un método hasRole en AuthService)
       this.isAdmin = this.authService.hasRole('admin');
-
+      this.isSecretary = this.authService.hasRole('secretary');
       // Obtener nombre de usuario si está disponible
       this.userName = this.getUserNameFromToken() || 'Usuario';
     }

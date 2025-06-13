@@ -12,7 +12,11 @@ export const routes: Routes = [
     path: 'auth/register',
     loadComponent: () => import('./core/auth/register/register.component').then(m => m.RegisterComponent),
   },
-
+  {
+    path: 'reports',
+    loadChildren: () => import('./features/reports/reports-module').then(m => m.ReportsModule),
+    canActivate: [AuthGuard]
+  },
   {
     path: 'floors',
     loadChildren: () => import('./features/floors/floors-module').then(m => m.FloorsModule),

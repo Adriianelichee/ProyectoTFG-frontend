@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { WorkstationService } from '../../core/api/workstation.service';
-import { WorkstationOutDto } from '../../core/models/workstation-out-dto';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {WorkstationService} from '../../core/api/workstation.service';
+import {WorkstationOutDto} from '../../core/models/workstation-out-dto';
+import {Router} from '@angular/router';
+import {AuthService} from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-workstation-list',
@@ -21,12 +22,17 @@ export class WorkstationListComponent implements OnInit {
 
   constructor(
     private workstationService: WorkstationService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
   }
 
   ngOnInit(): void {
     this.loadWorkstations();
+  }
+
+  hasAdminAccess(): boolean {
+    return this.authService.hasRole('admin') || this.authService.hasRole('secretary');
   }
 
   loadWorkstations(): void {

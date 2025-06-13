@@ -14,7 +14,7 @@ body {
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.03);
 }
 
-.workstation-header {
+.workstation-header2 {
   margin-bottom: 30px;
   text-align: center;
 }
@@ -80,7 +80,7 @@ body {
 }
 
 .search-input {
-  width: 100%;
+  width: 80%;
   padding: 12px 20px 12px 45px;
   border: 1px solid #e1e1e1;
   border-radius: 50px;

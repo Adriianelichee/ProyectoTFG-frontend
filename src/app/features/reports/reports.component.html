@@ -75,7 +75,6 @@
         <th>Fecha</th>
         <th>Ubicación</th>
         <th>Estado</th>
-        <th>Proveedores</th>
         <th>Acciones</th>
       </tr>
       </thead>
@@ -93,22 +92,28 @@
                               {{ statusLabels[report.status] }}
                             </span>
         </td>
-        <td class="report-providers">
-          <div class="providers-list" *ngIf="getMatchingProviders(report).length > 0">
-                              <span *ngFor="let provider of getMatchingProviders(report).slice(0, 2)"
-                                    class="provider-badge">
-                                {{ provider.providerName }}
-                              </span>
-            <span class="more-providers" *ngIf="getMatchingProviders(report).length > 2">
-                                +{{ getMatchingProviders(report).length - 2 }} más
-                              </span>
-          </div>
-          <span *ngIf="getMatchingProviders(report).length === 0">Sin proveedor</span>
-        </td>
         <td class="report-actions">
-          <button class="action-btn view-btn" [routerLink]="['/reports', report.reportId]">
-            <i class="fas fa-eye"></i>
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn view-btn" (click)="verDetalleReporte(report.reportId)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <div class="dropdown-wrapper">
+              <button class="action-btn status-btn" (click)="toggleStatusMenu(report.reportId)">
+                <i class="fas fa-exchange-alt"></i>
+              </button>
+              <div class="status-dropdown" *ngIf="activeDropdown === report.reportId">
+                <button class="status-option pending" (click)="updateStatus(report, 'pending')">
+                  Pendiente
+                </button>
+                <button class="status-option in-progress" (click)="updateStatus(report, 'in_progress')">
+                  En progreso
+                </button>
+                <button class="status-option resolved" (click)="updateStatus(report, 'resolved')">
+                  Resuelto
+                </button>
+              </div>
+            </div>
+          </div>
         </td>
       </tr>
       </tbody>

@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
-import { FloorService } from '../../core/api/floor.service';
-import { RoomService } from '../../core/api/room.service';
-import { WorkstationService } from '../../core/api/workstation.service';
-import { ServiceService } from '../../core/api/service.service';
-import { FloorOutDto } from '../../core/models/floor-out-dto';
-import { RoomOutDto } from '../../core/models/room-out-dto';
-import { WorkstationOutDto } from '../../core/models/workstation-out-dto';
-import { ServiceOutDto } from '../../core/models/service-out-dto';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {AuthService} from '../../core/auth/auth.service';
+import {FloorService} from '../../core/api/floor.service';
+import {RoomService} from '../../core/api/room.service';
+import {WorkstationService} from '../../core/api/workstation.service';
+import {ServiceService} from '../../core/api/service.service';
+import {FloorOutDto} from '../../core/models/floor-out-dto';
+import {RoomOutDto} from '../../core/models/room-out-dto';
+import {WorkstationOutDto} from '../../core/models/workstation-out-dto';
+import {ServiceOutDto} from '../../core/models/service-out-dto';
 
 @Component({
   selector: 'app-home',
@@ -20,10 +20,12 @@ import { ServiceOutDto } from '../../core/models/service-out-dto';
 })
 export class HomeComponent implements OnInit {
   isLoggedIn = false;
+  activeFaqIndex: number | null = null;
   featuredRooms: RoomOutDto[] = [];
   featuredWorkstations: WorkstationOutDto[] = [];
   featuredServices: ServiceOutDto[] = [];
   floors: FloorOutDto[] = [];
+  showLoginToast = false;
 
   activeTabIndex: number = 0;
 
@@ -45,6 +47,25 @@ export class HomeComponent implements OnInit {
       company: 'Creative Studio',
       image: '/testimonial-3.png',
       quote: 'El ambiente colaborativo de CoWork Space nos ha permitido establecer conexiones valiosas con otras empresas. ¡Totalmente recomendado!'
+    }
+  ];
+
+  faqs = [
+    {
+      question: '¿Cómo puedo reservar un espacio de trabajo?',
+      answer: 'Puede reservar un espacio de trabajo iniciando sesión en su cuenta y navegando a la sección de reservas. Allí podrá seleccionar el tipo de espacio, la fecha y hora deseada.'
+    },
+    {
+      question: '¿Cuáles son los horarios de funcionamiento?',
+      answer: 'Nuestras instalaciones están abiertas las 24 horas del día, los 7 días de la semana para miembros con acceso completo. El personal de recepción está disponible de lunes a viernes de 8:00 a 20:00.'
+    },
+    {
+      question: '¿Cómo funciona el servicio de limpieza?',
+      answer: 'El servicio de limpieza se puede solicitar a través de la plataforma en la sección de servicios. Puede programar una limpieza regular o solicitar una limpieza puntual según sus necesidades.'
+    },
+    {
+      question: '¿Puedo cancelar mi reserva?',
+      answer: 'Sí, puede cancelar su reserva hasta 24 horas antes sin costo adicional. Las cancelaciones con menos de 24 horas de anticipación pueden estar sujetas a cargos.'
     }
   ];
 
@@ -87,7 +108,8 @@ export class HomeComponent implements OnInit {
     private roomService: RoomService,
     private workstationService: WorkstationService,
     private serviceService: ServiceService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
@@ -117,6 +139,20 @@ export class HomeComponent implements OnInit {
       },
       error: (err) => console.error('Error al cargar salas destacadas:', err)
     });
+  }
+
+  toggleFaqItem(index: number): void {
+    if (this.activeFaqIndex === index) {
+      // Si ya está activa, la desactivamos
+      this.activeFaqIndex = null;
+    } else {
+      // Si no está activa, la activamos
+      this.activeFaqIndex = index;
+    }
+  }
+
+  isFaqActive(index: number): boolean {
+    return this.activeFaqIndex === index;
   }
 
   loadFeaturedWorkstations(): void {
@@ -149,5 +185,30 @@ export class HomeComponent implements OnInit {
       },
       error: (err) => console.error('Error al cargar plantas:', err)
     });
+  }
+
+  // Método para mostrar vista previa para usuarios no autenticados
+  showPreview(type: string, id: number): void {
+    if (!this.isLoggedIn) {
+      this.showLoginToast = true;
+      setTimeout(() => {
+        this.showLoginToast = false;
+      }, 3000);
+    }
+  }
+
+  // Método para vista previa de salas
+  viewRoomPreview(room: RoomOutDto): void {
+    this.showPreview('room', room.roomId);
+  }
+
+  // Método para vista previa de puestos de trabajo
+  viewWorkstationPreview(workstation: WorkstationOutDto): void {
+    this.showPreview('workstation', workstation.workstationId);
+  }
+
+  // Método para vista previa de servicios
+  viewServicePreview(service: ServiceOutDto): void {
+    this.showPreview('service', service.serviceId);
   }
 }

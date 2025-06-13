@@ -1,7 +1,7 @@
 <div class="services-list-container">
   <div class="services-header">
     <div class="title-section">
-      <h2>Gestión de Servicios</h2>
+      <h2>Servicios</h2>
       <p class="services-count">{{ services.length }} servicios encontrados</p>
     </div>
 
@@ -16,7 +16,7 @@
           class="search-input">
       </div>
 
-      <button class="btn-create" (click)="onCreate()">
+      <button class="btn-create" (click)="onCreate()" *ngIf="hasAdminAccess()">
         <i class="fas fa-plus"></i> Nuevo Servicio
       </button>
     </div>
@@ -53,10 +53,10 @@
         <button class="btn-view" (click)="onView(service.serviceId)">
           <i class="fas fa-eye"></i> Ver
         </button>
-        <button class="btn-edit" (click)="onEdit(service.serviceId)">
+        <button class="btn-edit" *ngIf="hasAdminAccess()" (click)="onEdit(service.serviceId)">
           <i class="fas fa-edit"></i> Editar
         </button>
-        <button class="btn-delete" (click)="onDelete(service.serviceId)">
+        <button class="btn-delete" *ngIf="hasAdminAccess()" (click)="onDelete(service.serviceId)">
           <i class="fas fa-trash"></i> Eliminar
         </button>
       </div>

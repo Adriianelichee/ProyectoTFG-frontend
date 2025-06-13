@@ -1,0 +1,101 @@
+<div class="report-view-container" *ngIf="report">
+  <div class="report-header">
+    <div class="back-button">
+      <button class="btn-outline" routerLink="/reports">
+        <i class="fas fa-arrow-left"></i> Volver a reportes
+      </button>
+    </div>
+    <h1>Reporte #{{ report.reportId }}</h1>
+    <div class="report-status">
+      <span class="status-badge" [ngClass]="statusClasses[report.status]">
+        {{ statusLabels[report.status] }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div class="error-alert" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Contenido del reporte -->
+  <div class="report-content" *ngIf="!isLoading">
+    <div class="report-section">
+      <h2>Información general</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Fecha de reporte:</span>
+          <span class="value">{{ formatDate(report.reportDate) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Reportado por:</span>
+          <span class="value">{{ reporterName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Estado actual:</span>
+          <div class="status-control">
+            <span class="status-badge" [ngClass]="statusClasses[report.status]">
+              {{ statusLabels[report.status] }}
+            </span>
+            <button class="status-change-btn" (click)="toggleStatusDropdown()" *ngIf="isAdmin">
+              <i class="fas fa-pen-alt"></i>
+            </button>
+
+            <!-- Menú desplegable de estados -->
+            <div class="status-dropdown" *ngIf="showStatusDropdown">
+              <button class="status-option pending" (click)="updateStatus('pending')">
+                <i class="fas fa-circle"></i> Pendiente
+              </button>
+              <button class="status-option in-progress" (click)="updateStatus('in_progress')">
+                <i class="fas fa-spinner"></i> En progreso
+              </button>
+              <button class="status-option resolved" (click)="updateStatus('resolved')">
+                <i class="fas fa-check-circle"></i> Resuelto
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="label">Responsable:</span>
+          <span class="value">{{ managerName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h2>Ubicación</h2>
+      <div class="location-info">
+        <p><i class="fas fa-building"></i> <strong>Piso:</strong> {{ floorName || 'Piso ' + report.floorId }}</p>
+        <p *ngIf="report.roomId"><i class="fas fa-door-open"></i>
+          <strong>Sala:</strong> {{ roomName || 'Sala ' + report.roomId }}</p>
+        <p *ngIf="report.workstationId"><i class="fas fa-desktop"></i>
+          <strong>Estación:</strong> {{ workstationName || 'Estación ' + report.workstationId }}</p>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h2>Descripción del problema</h2>
+      <div class="description-box">
+        <p>{{ report.description }}</p>
+      </div>
+    </div>
+
+    <div class="report-section actions" *ngIf="isAdmin">
+      <h2>Acciones administrativas</h2>
+      <div class="action-buttons">
+        <button class="btn-primary" [disabled]="true" title="Funcionalidad próximamente disponible">
+          <i class="fas fa-user-plus"></i> Asignar proveedor (próximamente)
+        </button>
+        <button class="btn-outline" [disabled]="true" title="Funcionalidad próximamente disponible">
+          <i class="fas fa-file-alt"></i> Generar informe (próximamente)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cargando -->
+  <div class="loading-indicator" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin"></i> Cargando información...
+  </div>
+</div>

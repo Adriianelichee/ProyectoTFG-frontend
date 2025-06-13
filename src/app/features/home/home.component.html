@@ -7,13 +7,21 @@
       <a [routerLink]="isLoggedIn ? '/reservations/new' : '/auth/login'" class="btn-primary">
         {{ isLoggedIn ? 'Reservar ahora' : 'Comenzar' }}
       </a>
-      <a href="#spaces" class="btn-secondary">Explorar espacios</a>
+      <a href="#spaces" class="btn-secondary" *ngIf="isLoggedIn">Explorar espacios</a>
+      <a href="#features" class="btn-secondary" *ngIf="!isLoggedIn">Explorar beneficios</a>
     </div>
   </div>
 </section>
 
+<!-- Alerta de inicio de sesión -->
+<div class="login-toast" *ngIf="showLoginToast">
+  <i class="fas fa-info-circle"></i>
+  <p>Inicia sesión para ver detalles completos y reservar</p>
+  <a [routerLink]="'/auth/login'" class="btn-toast">Iniciar sesión</a>
+</div>
+
 <!-- Features Section -->
-<section class="features">
+<section id="features" class="features">
   <div class="container">
     <h2 class="section-title">¿Por qué elegir CoWork Space?</h2>
     <div class="features-grid">
@@ -28,8 +36,8 @@
   </div>
 </section>
 
-<!-- Spaces Section -->
-<section id="spaces" class="spaces">
+<!-- Spaces Section - Solo visible para usuarios logueados -->
+<section id="spaces" class="spaces" *ngIf="isLoggedIn">
   <div class="container">
     <h2 class="section-title">Nuestros espacios</h2>
     <div class="spaces-tabs">
@@ -51,9 +59,11 @@
             <span><i class="fas fa-euro-sign"></i> {{ room.hourlyRate }}/hora</span>
           </div>
           <p>Sala equipada con la última tecnología para tus reuniones y presentaciones.</p>
-          <a [routerLink]="isLoggedIn ? ['/rooms', room.roomId] : '/auth/login'" class="btn-outline">
-            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para reservar' }}
-          </a>
+          <div class="card-actions">
+            <a [routerLink]="['/rooms', room.roomId]" class="btn-outline">
+              Ver detalles
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -70,9 +80,11 @@
             <span><i class="fas fa-euro-sign"></i> {{ workstation.hourlyRate }}/hora</span>
           </div>
           <p>Espacio de trabajo equipado con todo lo necesario para maximizar tu productividad.</p>
-          <a [routerLink]="isLoggedIn ? ['/workstations', workstation.workstationId] : '/auth/login'" class="btn-outline">
-            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para reservar' }}
-          </a>
+          <div class="card-actions">
+            <a [routerLink]="['/workstations', workstation.workstationId]" class="btn-outline">
+              Ver detalles
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -89,17 +101,19 @@
             <span><i class="fas fa-euro-sign"></i> {{ service.price }}</span>
           </div>
           <p>{{ service.description }}</p>
-          <a [routerLink]="isLoggedIn ? ['/services', service.serviceId] : '/auth/login'" class="btn-outline">
-            {{ isLoggedIn ? 'Ver detalles' : 'Iniciar sesión para solicitar' }}
-          </a>
+          <div class="card-actions">
+            <a [routerLink]="['/services', service.serviceId, 'view']" class="btn-outline">
+              Ver detalles
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Floors Section -->
-<section class="floors">
+<!-- Floors Section - Solo visible para usuarios logueados -->
+<section class="floors" *ngIf="isLoggedIn">
   <div class="container">
     <h2 class="section-title">Nuestras plantas</h2>
     <div class="floors-slider">
@@ -108,7 +122,8 @@
         <div class="floor-content">
           <h3>{{ floor.floorName }}</h3>
           <p>{{ floor.description }}</p>
-          <a [routerLink]="['/floors', floor.floorId]" class="btn-text">Explorar planta <i class="fas fa-arrow-right"></i></a>
+          <a [routerLink]="['/floors', floor.floorId]" class="btn-text">Explorar planta <i
+            class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
@@ -220,40 +235,13 @@
   <div class="container">
     <h2 class="section-title">Preguntas frecuentes</h2>
     <div class="faq-grid">
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cuáles son los horarios de acceso?</h3>
+      <div class="faq-item" [class.active]="isFaqActive(i)" *ngFor="let faq of faqs; let i = index">
+        <div class="faq-question" (click)="toggleFaqItem(i)">
+          <h3>{{ faq.question }}</h3>
           <i class="fas fa-chevron-down"></i>
         </div>
         <div class="faq-answer">
-          <p>Ofrecemos acceso 24/7 para todos nuestros miembros. Podrás trabajar cuando mejor te convenga, incluyendo fines de semana y días festivos.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Qué incluyen las tarifas?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>Nuestras tarifas incluyen internet de alta velocidad, servicios de impresión, café y snacks, acceso a áreas comunes, y soporte técnico durante el horario de oficina.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Puedo cancelar mi reserva?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>Sí, puedes cancelar tu reserva hasta 24 horas antes sin costo adicional. Las cancelaciones con menos de 24 horas de antelación tendrán un cargo del 50% del valor de la reserva.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Ofrecen descuentos para reservas a largo plazo?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>Sí, ofrecemos descuentos especiales para reservas mensuales y trimestrales. Contacta con nuestro equipo de ventas para obtener más información sobre nuestros planes corporativos.</p>
+          <p>{{ faq.answer }}</p>
         </div>
       </div>
     </div>
