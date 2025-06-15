@@ -4,11 +4,10 @@
     <h1>Tu espacio de trabajo ideal</h1>
     <p>Espacios flexibles diseñados para impulsar la productividad y la colaboración</p>
     <div class="hero-buttons">
-      <a [routerLink]="isLoggedIn ? '/reservations/new' : '/auth/login'" class="btn-primary">
+      <a [routerLink]="isLoggedIn ? '/rooms' : '/auth/login'" class="btn-primary">
         {{ isLoggedIn ? 'Reservar ahora' : 'Comenzar' }}
       </a>
-      <a href="#spaces" class="btn-secondary" *ngIf="isLoggedIn">Explorar espacios</a>
-      <a href="#features" class="btn-secondary" *ngIf="!isLoggedIn">Explorar beneficios</a>
+      <a href="/floors" class="btn-secondary" *ngIf="isLoggedIn">Explorar espacios</a>
     </div>
   </div>
 </section>
@@ -60,7 +59,7 @@
           </div>
           <p>Sala equipada con la última tecnología para tus reuniones y presentaciones.</p>
           <div class="card-actions">
-            <a [routerLink]="['/rooms', room.roomId]" class="btn-outline">
+            <a [routerLink]="['/rooms', room.roomId, 'view']" class="btn-outline">
               Ver detalles
             </a>
           </div>
@@ -81,7 +80,7 @@
           </div>
           <p>Espacio de trabajo equipado con todo lo necesario para maximizar tu productividad.</p>
           <div class="card-actions">
-            <a [routerLink]="['/workstations', workstation.workstationId]" class="btn-outline">
+            <a [routerLink]="['/workstations', workstation.workstationId, 'view']" class="btn-outline">
               Ver detalles
             </a>
           </div>
@@ -122,7 +121,7 @@
         <div class="floor-content">
           <h3>{{ floor.floorName }}</h3>
           <p>{{ floor.description }}</p>
-          <a [routerLink]="['/floors', floor.floorId]" class="btn-text">Explorar planta <i
+          <a [routerLink]="['/floors', floor.floorId, 'view']" class="btn-text">Explorar planta <i
             class="fas fa-arrow-right"></i></a>
         </div>
       </div>
@@ -159,10 +158,10 @@
       <h2>¿Listo para transformar tu forma de trabajar?</h2>
       <p>Únete a nuestra comunidad de profesionales y empresas innovadoras.</p>
       <div class="cta-buttons">
-        <a [routerLink]="isLoggedIn ? '/reservations/new' : '/auth/register'" class="btn-primary">
+        <a [routerLink]="isLoggedIn ? '/floors' : '/auth/register'" class="btn-primary">
           {{ isLoggedIn ? 'Hacer una reserva' : 'Registrarse' }}
         </a>
-        <a href="#contact" class="btn-secondary">Contactar</a>
+        <a (click)="scrollToContact()" class="btn-secondary">Contactar</a>
       </div>
     </div>
   </div>

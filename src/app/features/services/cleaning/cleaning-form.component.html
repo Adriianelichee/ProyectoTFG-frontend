@@ -17,6 +17,11 @@
       <span>{{ errorMessage }}</span>
     </div>
 
+    <div *ngIf="successMessage" class="success-container">
+      <i class="fas fa-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+
     <form [formGroup]="cleaningForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
       <div class="form-group date-time-group">
         <label for="cleaningDate">Fecha y hora de limpieza</label>

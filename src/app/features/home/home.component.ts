@@ -141,6 +141,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  scrollToContact(): void {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({behavior: 'smooth'});
+    }
+  }
+
   toggleFaqItem(index: number): void {
     if (this.activeFaqIndex === index) {
       // Si ya está activa, la desactivamos

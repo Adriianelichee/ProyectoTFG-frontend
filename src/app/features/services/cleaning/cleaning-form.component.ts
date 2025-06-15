@@ -34,6 +34,8 @@ export class CleaningFormComponent implements OnInit {
   workstations: WorkstationOutDto[] = [];
   filteredRooms: RoomOutDto[] = [];
   filteredWorkstations: WorkstationOutDto[] = [];
+  successMessage: string | null = null;
+
 
   userId: number = 0;
   companyId: number = 0;
@@ -237,13 +239,12 @@ export class CleaningFormComponent implements OnInit {
     if (this.cleaningForm.invalid) return;
 
     this.errorMessage = null;
+    this.successMessage = null;
 
-    // Validar que los IDs existen
     if (!this.validateIds()) {
       return;
     }
 
-    // Formatear la fecha correctamente para el backend
     const formattedDate = this.formatDateForBackend(this.cleaningDateControl.value);
 
     const dto: CleaningInDto = {
@@ -263,7 +264,10 @@ export class CleaningFormComponent implements OnInit {
       this.cleaningService.update(this.cleaningId, dto).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/services/cleaning/requests']);
+          this.successMessage = 'La solicitud de limpieza se ha actualizado correctamente';
+          setTimeout(() => {
+            this.router.navigate(['/services/cleaning/requests']);
+          }, 2000);
         },
         error: (err) => {
           console.error('Error al actualizar solicitud de limpieza:', err);
@@ -275,7 +279,10 @@ export class CleaningFormComponent implements OnInit {
       this.cleaningService.create(dto).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/services/cleaning/requests']);
+          this.successMessage = 'La solicitud de limpieza se ha enviado correctamente';
+          setTimeout(() => {
+            this.router.navigate(['/services/cleaning/requests']);
+          }, 2000);
         },
         error: (err) => {
           console.error('Error al crear solicitud de limpieza:', err);

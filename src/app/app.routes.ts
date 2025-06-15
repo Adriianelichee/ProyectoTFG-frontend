@@ -18,6 +18,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'about',
+    loadChildren: () => import('./features/nosotros/nosotros-module').then(m => m.NosotrosModule)
+  },
+  {
     path: 'floors',
     loadChildren: () => import('./features/floors/floors-module').then(m => m.FloorsModule),
     canActivate: [AuthGuard]

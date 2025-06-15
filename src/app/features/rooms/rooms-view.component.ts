@@ -12,7 +12,7 @@ import {ReservationInDto} from '../../core/models/reservation-in-dto';
 import {DetailReservationRoomInDto} from '../../core/models/detail-reservation-room-in-dto';
 import {DetailReservationRoomOutDto} from '../../core/models/detail-reservation-room-out-dto';
 import {forkJoin, Observable, of} from 'rxjs';
-import { finalize, switchMap, map } from 'rxjs/operators';
+import {finalize, switchMap, map} from 'rxjs/operators';
 
 interface TimeSlot {
   time: string;
@@ -46,9 +46,11 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
   showBookingForm = false;
   bookingForm: FormGroup;
   userId?: number | null;
+  minDate: string; // Para establecer la fecha mínima permitida
 
   // Horarios disponibles base (8am - 6pm)
-  availableTimes: string[] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  baseAvailableTimes: string[] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  availableTimes: string[] = [];
 
   // Calendario de disponibilidad
   selectedDate: Date = new Date();
@@ -67,9 +69,9 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
   averageRating?: number = 4.7;
   createdReservationId?: number;
 
-
   // Control de visualización de calendario
   calendarView = 'week'; // 'week' o 'month'
+  duracionMaximaPermitida: number = 8;
 
   constructor(
     private roomService: RoomService,
@@ -81,15 +83,22 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     private router: Router,
     private fb: FormBuilder
   ) {
+    // Configurar fecha mínima como hoy
+    this.minDate = this.formatDate(new Date());
+
     this.bookingForm = this.fb.group({
-      bookingDate: ['', Validators.required],
+      bookingDate: [this.minDate, Validators.required],
       startTime: ['', Validators.required],
       duration: ['1', [Validators.required, Validators.min(1), Validators.max(8)]]
     });
 
-    // Suscribirse a cambios en la duración
+    // Suscribirse a cambios en la duración y hora de inicio
     this.bookingForm.get('duration')?.valueChanges.subscribe(() => {
       this.onDurationChange();
+    });
+
+    this.bookingForm.get('startTime')?.valueChanges.subscribe(() => {
+      this.onStartTimeChange();
     });
   }
 
@@ -130,6 +139,57 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.loadCalendarData();
       }, 100);
+    }
+  }
+
+  // Nuevo método para manejar cambios en hora de inicio
+  onStartTimeChange(): void {
+    const startTime = this.bookingForm.get('startTime')?.value;
+    if (!startTime) return;
+
+    // Obtener la hora actual seleccionada
+    const [hours, minutes] = startTime.split(':').map(Number);
+
+    // Calcular horas disponibles hasta las 19:00
+    const horasDisponibles = 19 - hours;
+
+    // Ajustar duración máxima según la hora seleccionada
+    if (horasDisponibles < 8) {
+      // Limitar la duración al máximo de horas disponibles
+      const currentDuration = parseInt(this.bookingForm.get('duration')?.value || '1');
+
+      if (currentDuration > horasDisponibles) {
+        // Ajustar automáticamente la duración al máximo permitido
+        this.bookingForm.get('duration')?.setValue(horasDisponibles.toString());
+      }
+
+      // Desactivar opciones de duración que excedan el límite
+      this.actualizarOpcionesDeHoras(horasDisponibles);
+    } else {
+      // Habilitar todas las opciones de duración
+      this.actualizarOpcionesDeHoras(8);
+    }
+  }
+
+  actualizarOpcionesDeHoras(maximoHoras: number): void {
+    // Actualizar variables para la interfaz
+    this.duracionMaximaPermitida = maximoHoras;
+
+    // Actualizar el formulario para reflejar las nuevas opciones
+    const duracionControl = this.bookingForm.get('duration');
+    if (duracionControl && duracionControl.value > maximoHoras) {
+      duracionControl.setValue(maximoHoras.toString());
+    }
+
+    // Si la duración es 1, siempre permitir edición
+    if (maximoHoras > 1) {
+      duracionControl?.enable();
+    } else {
+      // Verificar que el control existe antes de modificarlo
+      if (duracionControl) {
+        duracionControl.setValue('1');
+        duracionControl.disable();
+      }
     }
   }
 
@@ -235,7 +295,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Añadimos un métod para actualizar cuando cambie la duración
+  // Añadimos un método para actualizar cuando cambie la duración
   onDurationChange(): void {
     const dateStr = this.bookingForm.get('bookingDate')?.value;
     if (!dateStr || !this.roomId) return;
@@ -275,23 +335,42 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     // Obtener la duración actual del formulario
     const duration = parseInt(this.bookingForm.get('duration')?.value || '1');
 
+    // Obtener la fecha actual para comparar (solo la fecha, sin hora)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentTime = new Date();
+
     // Generar los 7 días de la semana
     for (let i = 0; i < 7; i++) {
       const date = new Date(startOfWeek);
       date.setDate(date.getDate() + i);
-
       const dateString = this.formatDate(date);
       const dayName = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'][date.getDay()];
 
-      // Crear slots de tiempo para este día con la duración correcta
-      const slots = this.availableTimes.map(time => {
+      // Verificar si la fecha es anterior a hoy
+      const isPastDate = date < today;
+
+      // Crear slots de tiempo específicos para este día
+      const slots = this.baseAvailableTimes.map(time => {
+        // Si es fecha pasada, marcar como no disponible
+        if (isPastDate) {
+          return {time, available: false};
+        }
+
+        // Solo para el día actual, verificar si la hora ya pasó
+        const isCurrentDay = this.isSameDay(date, new Date());
+        if (isCurrentDay) {
+          const [hours, minutes] = time.split(':').map(Number);
+          const horasDisponibles = 19 - hours;
+
+          if (duration > horasDisponibles) {
+            return {time, available: false};
+          }
+        }
+
         // Verificar disponibilidad considerando la duración
         const isAvailable = this.isTimeSlotAvailable(dateString, time, reservations, duration);
-
-        return {
-          time,
-          available: isAvailable
-        };
+        return {time, available: isAvailable};
       });
 
       this.weekSchedule.push({
@@ -319,6 +398,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     const year = this.selectedDate.getFullYear();
     const month = this.selectedDate.getMonth();
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     // Crear primer día del mes
     const firstDayOfMonth = new Date(year, month, 1);
@@ -336,6 +416,7 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
 
       const isCurrentMonth = date.getMonth() === month;
       const isToday = this.isSameDay(date, today);
+      const isPastDate = date < today;
 
       // Verificar si este día tiene eventos (reservas)
       const dateString = this.formatDate(date);
@@ -362,6 +443,12 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
 
     const slotStart = new Date(year, month - 1, day, hours, minutes);
     const slotEnd = new Date(slotStart);
+
+    // Caso especial: si la hora es 18:00, solo permitir 1 hora máximo
+    if (hours === 18 && durationHours > 1) {
+      durationHours = 1;
+    }
+
     slotEnd.setHours(slotStart.getHours() + durationHours); // Considerar la duración completa
 
     // Verificar si hay algún conflicto con las reservas existentes
@@ -422,6 +509,14 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
 
     // Crear objeto de fecha para el día seleccionado
     const selectedDate = new Date(this.selectedDate.getFullYear(), day.month, day.date);
+
+    // Verificar si la fecha es pasada
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+      return; // No permitir seleccionar fechas pasadas
+    }
+
     this.selectedDate = selectedDate;
 
     // Formatear fecha para el formulario
@@ -454,6 +549,18 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     const dateStr = (event.target as HTMLInputElement).value;
     if (!dateStr || !this.roomId) return;
 
+    // Verificar si la fecha es pasada
+    const selectedDate = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'No puedes seleccionar fechas pasadas';
+      return;
+    }
+
+    this.errorMessage = null;
+
     // Crear rango de fechas para ese día
     const [year, month, day] = dateStr.split('-').map(Number);
     const startDate = new Date(year, month - 1, day, 0, 0, 0);
@@ -472,15 +579,43 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
 
   // Actualizar los horarios disponibles para una fecha específica
   updateAvailableTimesForDate(dateStr: string, reservations: DetailReservationRoomOutDto[]): void {
+    // Verificar si la fecha es hoy para filtrar horarios pasados
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    const today = new Date();
+
+    // Comparar solo las fechas sin considerar el tiempo
+    today.setHours(0, 0, 0, 0);
+    const selectedDay = new Date(selectedDate);
+    selectedDay.setHours(0, 0, 0, 0);
+
+    const isToday = this.isSameDay(selectedDate, new Date());
+
     // Obtener la duración actual del formulario
     const duration = parseInt(this.bookingForm.get('duration')?.value || '1');
 
+    // Array temporal para guardar los horarios disponibles
+    const availableSlots: string[] = [];
+
     // Filtrar horarios disponibles considerando la duración completa
-    this.availableTimes = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-      .filter(time => {
-        // Verificar si este horario está disponible por toda la duración
-        return this.isTimeSlotAvailable(dateStr, time, reservations, duration);
-      });
+    this.baseAvailableTimes.forEach(time => {
+      // Solo filtrar horas pasadas si es el día actual
+      if (isToday) {
+        const [hours, minutes] = time.split(':').map(Number);
+        const horasDisponibles = 19 - hours;
+        if (duration > horasDisponibles) {
+          return;
+        }
+      }
+
+      // Verificar si este horario está disponible por toda la duración
+      if (this.isTimeSlotAvailable(dateStr, time, reservations, duration)) {
+        availableSlots.push(time);
+      }
+    });
+
+    // Actualizar el array de horarios disponibles
+    this.availableTimes = availableSlots;
 
     // Si la hora seleccionada ya no está disponible, resetear
     const currentTime = this.bookingForm.get('startTime')?.value;
@@ -491,6 +626,14 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
 
   // Seleccionar una fecha del calendario
   selectDate(daySchedule: DaySchedule): void {
+    // Verificar si la fecha es pasada
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (daySchedule.dateObj < today) {
+      return; // No permitir seleccionar fechas pasadas
+    }
+
     this.selectedDate = daySchedule.dateObj;
     this.bookingForm.get('bookingDate')?.setValue(daySchedule.date);
 
@@ -536,15 +679,12 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     if (this.showBookingForm) {
       this.bookingForm.reset();
       this.bookingForm.patchValue({
-        duration: '1'
+        duration: '1',
+        bookingDate: this.minDate // Usar fecha actual como mínima
       });
 
-      // Establecer la fecha seleccionada o actual
-      const today = this.formatDate(new Date());
-      this.bookingForm.get('bookingDate')?.setValue(today);
-
       // Cargar horarios disponibles
-      this.onDateChange({target: {value: today}} as unknown as Event);
+      this.onDateChange({target: {value: this.minDate}} as unknown as Event);
     }
   }
 
@@ -560,6 +700,11 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     const [hours, minutes] = startTime.split(':').map(Number);
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
+
+    // Caso especial para las 18:00
+    if (hours === 18 && durationHours > 1) {
+      durationHours = 1;
+    }
 
     // Añadir la duración en horas
     date.setTime(date.getTime() + (durationHours * 60 * 60 * 1000));
@@ -579,6 +724,17 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    // Verificar si la fecha es pasada
+    const dateStr = this.bookingForm.get('bookingDate')?.value;
+    const selectedDate = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      this.errorMessage = 'No puedes hacer reservas en fechas pasadas';
+      return;
+    }
+
     this.reservationLoading = true;
     this.errorMessage = null;
     this.successMessage = null;
@@ -586,7 +742,13 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
     try {
       const bookingDate = this.bookingForm.get('bookingDate')?.value;
       const startTime = this.bookingForm.get('startTime')?.value;
-      const duration = parseInt(this.bookingForm.get('duration')?.value || '1');
+      let duration = parseInt(this.bookingForm.get('duration')?.value || '1');
+
+      // Caso especial para las 18:00
+      if (startTime === '18:00' && duration > 1) {
+        duration = 1;
+      }
+
       const endTime = this.calculateEndTime(startTime, duration);
 
       // Verificar disponibilidad antes de crear la reserva
@@ -671,10 +833,10 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
           };
 
           // Guardar el ID de la reserva para redirigir al pago
-          const createdReservationId = reservation.reservationId;
+          this.createdReservationId = reservation.reservationId;
 
           return this.detailReservationRoomService.create(detailData).pipe(
-            map(detail => ({detail, reservationId: createdReservationId}))
+            map(detail => ({detail, reservationId: this.createdReservationId}))
           );
         }),
         finalize(() => {
@@ -683,17 +845,10 @@ export class RoomsViewComponent implements OnInit, AfterViewInit {
       )
       .subscribe({
         next: (result) => {
-          this.successMessage = 'Reserva realizada correctamente. Redirigiendo a la página de pago...';
+          this.successMessage = 'Reserva realizada correctamente.';
 
-          // Redirigir al usuario a la página de pago después de un breve retraso
-          setTimeout(() => {
-            this.router.navigate(['/payments/process'], {
-              queryParams: {
-                reservationId: result.reservationId,
-                type: 'room'
-              }
-            });
-          }, 1500);
+          // Redirigir al usuario a la página de pago
+          this.goToPayment();
         },
         error: (err) => {
           console.error('Error al crear reserva:', err);

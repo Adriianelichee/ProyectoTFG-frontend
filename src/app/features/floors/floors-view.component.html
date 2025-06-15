@@ -85,14 +85,14 @@
                   <span>{{ room.capacity }} personas</span>
                 </div>
               </div>
-              <div class="price">{{ room.hourlyRate | currency:'EUR':'symbol':'1.0-0' }} / hora</div>
-              @if (room.available) {
-                <button class="btn-reserve" (click)="reserveSpace('room', room.roomId)">
-                  Reservar Sala
-                </button>
-              } @else {
-                <div class="unavailable-message">Actualmente no disponible</div>
-              }
+              <div class="price">{{ room.hourlyRate | currency:'EUR':'symbol':'1.2-2' }} / hora
+              </div>              @if (room.available) {
+              <button class="btn-reserve" (click)="reserveSpace('room', room.roomId)">
+                Reservar Sala
+              </button>
+            } @else {
+              <div class="unavailable-message">Actualmente no disponible</div>
+            }
             </div>
           }
         </div>
@@ -107,7 +107,8 @@
           @for (workstation of workstations; track workstation.workstationId) {
             <div class="space-card" [class.unavailable]="!workstation.available">
               <div class="space-status">
-                <span [class.available]="workstation.available">{{ workstation.available ? 'Disponible' : 'Ocupado' }}</span>
+                <span
+                  [class.available]="workstation.available">{{ workstation.available ? 'Disponible' : 'Ocupado' }}</span>
               </div>
               <h3>Estación {{ workstation.workstationId }}</h3>
               <div class="space-details">
@@ -120,7 +121,7 @@
                   <span>Posición {{ workstation.workstationId }}</span>
                 </div>
               </div>
-              <div class="price">{{ workstation.hourlyRate | currency:'EUR':'symbol':'1.0-0' }} / hora</div>
+              <div class="price">{{ workstation.hourlyRate | currency:'EUR':'symbol':'1.2-2' }} / hora</div>
               @if (workstation.available) {
                 <button class="btn-reserve" (click)="reserveSpace('workstation', workstation.workstationId)">
                   Reservar Puesto

@@ -26,8 +26,7 @@ const routes: Routes = [
   {
     path: 'purchased/new',
     component: PurchasedServicesDetailComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: {roles: ['admin', 'secretary']}
+    canActivate: [AuthGuard]
   },
   {
     path: 'purchased/:id',

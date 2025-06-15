@@ -13,20 +13,28 @@
           <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <i class="fas fa-home"></i> Inicio
           </a></li>
-          <li><a routerLink="/floors" routerLinkActive="active">
-            <i class="fas fa-building"></i> Espacios
-          </a></li>
-          <li><a routerLink="/rooms" routerLinkActive="active">
-            <i class="fas fa-door-open"></i> Salas
-          </a></li>
-          <li><a routerLink="/workstations" routerLinkActive="active">
-            <i class="fas fa-laptop"></i> Estaciones
-          </a></li>
-          <li><a routerLink="/services" routerLinkActive="active">
-            <i class="fas fa-concierge-bell"></i> Servicios
-          </a></li>
+
+          <ng-container *ngIf="isLoggedIn">
+            <li><a routerLink="/floors" routerLinkActive="active">
+              <i class="fas fa-building"></i> Espacios
+            </a></li>
+            <li><a routerLink="/rooms" routerLinkActive="active">
+              <i class="fas fa-door-open"></i> Salas
+            </a></li>
+            <li><a routerLink="/workstations" routerLinkActive="active">
+              <i class="fas fa-laptop"></i> Estaciones
+            </a></li>
+            <li><a routerLink="/services" routerLinkActive="active">
+              <i class="fas fa-concierge-bell"></i> Servicios
+            </a></li>
+          </ng-container>
+
           <li><a routerLink="/about" routerLinkActive="active">
             <i class="fas fa-info-circle"></i> Nosotros
+          </a></li>
+
+          <li><a routerLink="/" (click)="scrollToContact()">
+            <i class="fas fa-envelope"></i> Contacto
           </a></li>
         </ul>
       </nav>
@@ -34,7 +42,6 @@
       <div class="auth-buttons">
         <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
           <a routerLink="/auth/login" class="btn-login"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
-          <a routerLink="/auth/register" class="btn-register"><i class="fas fa-user-plus"></i> Registrarse</a>
         </ng-container>
         <ng-template #loggedInTemplate>
           <div class="user-menu">
@@ -47,6 +54,12 @@
               <a routerLink="/profile">
                 <i class="fas fa-user"></i> Mi perfil
               </a>
+              <a routerLink="/reservations" *ngIf="userHasReservationsOrServices">
+                <i class="fas fa-calendar-check"></i> Mis reservas
+              </a>
+              <a routerLink="/services/purchased" *ngIf="userHasReservationsOrServices">
+                <i class="fas fa-concierge-bell"></i> Mis servicios
+              </a>
               <a routerLink="/auth/register" *ngIf="isAdmin || isSecretary">
                 <i class="fas fa-user-plus"></i> Registrar Usuario
               </a>
@@ -56,8 +69,14 @@
               <a *ngIf="userHasReservationsOrServices" routerLink="services/cleaning/new">
                 <i class="fas fa-broom"></i> Solicitar Limpieza
               </a>
-              <a *ngIf="userHasReservationsOrServices" routerLink="/reports/view">
-                <i class="fas fa-clipboard-list"></i> Mis reportes
+              <a *ngIf="isAdmin || isSecretary" routerLink="services/cleaning/requests">
+                <i class="fas fa-broom"></i> Solicitudes de Limpieza
+              </a>
+              <a  routerLink="/reports/view">
+                <i class="fas fa-clipboard-list"></i> Mis Reportes
+              </a>
+              <a  *ngIf="isAdmin || isSecretary" routerLink="/reports">
+                <i class="fas fa-clipboard-list"></i> Reportes
               </a>
               <a href="#" (click)="logout($event)">
                 <i class="fas fa-sign-out-alt"></i> Cerrar sesión

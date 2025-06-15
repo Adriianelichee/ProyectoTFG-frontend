@@ -65,6 +65,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  scrollToContact(): void {
+    setTimeout(() => {
+      const contactElement = document.getElementById('contact');
+      if (contactElement) {
+        contactElement.scrollIntoView({behavior: 'smooth'});
+      }
+    }, 100); // Pequeño retraso para asegurar que la navegación se complete primero
+  }
+
 
   ngOnDestroy(): void {
     // Limpiar la suscripción cuando el componente se destruye

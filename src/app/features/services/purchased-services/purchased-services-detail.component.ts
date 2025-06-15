@@ -239,8 +239,16 @@ export class PurchasedServicesDetailComponent implements OnInit {
       });
     } else {
       this.purchasedServiceService.create(dto).subscribe({
-        next: () => {
-          this.router.navigate(['/services/purchased']);
+        next: (result) => {
+
+          setTimeout(() => {
+            this.router.navigate(['/payments/process'], {
+              queryParams: {
+                serviceId: result.serviceId,
+                type: 'service'
+              }
+            });
+          }, 1500);
         },
         error: (err) => {
           console.error('Error al contratar servicio:', err);

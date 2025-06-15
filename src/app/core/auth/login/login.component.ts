@@ -38,7 +38,7 @@ export class LoginComponent {
     this.authService.login({ email, password }).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/floors']);
+        this.router.navigate(['/home']);
       },
       error: () => {
         this.errorMessage = 'Credenciales inválidas';
