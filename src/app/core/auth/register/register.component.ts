@@ -147,12 +147,10 @@ export class RegisterComponent implements OnInit {
         this.loading = false;
         this.registrationSuccess = true;
         this.resetForm();
-        // No redirigimos al login para mantener la sesión actual
       },
       error: (err: any) => {
         console.error('Error al registrarse:', err);
 
-        // Verificar si el error es específicamente de correo duplicado
         if (err.error && (
           err.error.message?.includes('email already exists') ||
           err.error.message?.includes('correo ya existe') ||
@@ -160,7 +158,6 @@ export class RegisterComponent implements OnInit {
           err.error.message?.includes('ya está en uso') ||
           err.status === 409)) {
           this.errorMessage = 'Este correo electrónico ya está registrado. Por favor utiliza otro.';
-          // Marcar el campo de email como inválido
           this.emailControl.setErrors({'emailExists': true});
         } else {
           this.errorMessage = 'No se pudo completar el registro';
@@ -173,7 +170,6 @@ export class RegisterComponent implements OnInit {
 
   resetForm(): void {
     this.registerForm.reset();
-    // Establecer valores predeterminados después del registro exitoso
     setTimeout(() => {
       this.registrationSuccess = false;
     }, 3000);

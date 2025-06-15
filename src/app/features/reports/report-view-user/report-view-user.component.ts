@@ -62,12 +62,10 @@ export class ReportViewUserComponent implements OnInit {
   applyFilters(): void {
     let results = [...this.reports];
 
-    // Filtrar por estado si no es 'all'
     if (this.statusFilter !== 'all') {
       results = results.filter(report => report.status === this.statusFilter);
     }
 
-    // Filtrar por término de búsqueda
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       results = results.filter(report =>

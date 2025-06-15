@@ -14,7 +14,6 @@ export class SecretaryGuard implements CanActivate {
       return true;
     }
 
-    // Redirigir a la página principal si no es secretario
     return this.router.createUrlTree(['/']);
   }
 }

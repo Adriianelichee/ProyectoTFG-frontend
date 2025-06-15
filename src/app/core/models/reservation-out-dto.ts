@@ -5,8 +5,8 @@ export interface ReservationOutDto {
   reservationId: number;
   userId: number;
   reservationType: ReservationType;
-  startDate: string;         // string ISO
-  endDate: string;           // string ISO
+  startDate: string;
+  endDate: string;
   status: ReservationStatus;
   depositPaymentId: number | null;
 }

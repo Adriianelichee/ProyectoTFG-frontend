@@ -32,30 +32,26 @@ export class ReportsComponent implements OnInit {
 
   filterForm!: FormGroup;
 
-  // Mapeo de categorías a especialidades de proveedores
   specialtyMapping: { [key: string]: ReportProviderSpecialty } = {
     'maintenance': 'maintenance',
     'cleaning': 'cleaning',
     'security': 'security',
     'technology': 'technology',
-    'general': 'maintenance' // Por defecto asignamos general a mantenimiento
+    'general': 'maintenance'
   };
 
-  // Para mostrar estados en español
   statusLabels: { [key in ReportStatus]: string } = {
     'pending': 'Pendiente',
     'in_progress': 'En progreso',
     'resolved': 'Resuelto'
   };
 
-  // Para colorear los estados
   statusClasses: { [key in ReportStatus]: string } = {
     'pending': 'status-pending',
     'in_progress': 'status-in-progress',
     'resolved': 'status-resolved'
   };
 
-  // Para traducir categorías
   categoryLabels: { [key: string]: string } = {
     'maintenance': 'Mantenimiento',
     'cleaning': 'Limpieza',
@@ -79,7 +75,6 @@ export class ReportsComponent implements OnInit {
     this.loadReports();
     this.loadProviders();
 
-    // Suscribirse a cambios en los filtros
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilters();
     });
@@ -106,7 +101,6 @@ export class ReportsComponent implements OnInit {
       })
     ).subscribe({
       next: (reports) => {
-        // Si es cliente, filtrar solo sus reportes
         if (userRole === 'CLIENT' && userInfo) {
           this.reports = reports.filter(report => report.userId === userInfo.userId);
         } else {
@@ -143,7 +137,6 @@ export class ReportsComponent implements OnInit {
     const {specialty, status} = this.filterForm.value;
 
     this.filteredReports = this.reports.filter(report => {
-      // Solo filtrar por estado si está seleccionado
       if (status && report.status !== status) {
         return false;
       }
@@ -179,7 +172,6 @@ export class ReportsComponent implements OnInit {
       next: () => {
         report.status = newStatus;
         this.activeDropdown = null;
-        // Mostrar mensaje de éxito
         this.errorMessage = '';
       },
       error: (error) => {
@@ -197,13 +189,10 @@ export class ReportsComponent implements OnInit {
     this.filteredReports = [...this.reports];
   }
 
-  // Para mostrar los proveedores relacionados con un reporte específico
   getMatchingProviders(report: ReportOutDto): ReportProviderOutDto[] {
-    // Devolver todos los proveedores sin filtrar por categoría
     return this.providers;
   }
 
-  // Formatear fecha en español
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('es-ES', {

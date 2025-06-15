@@ -27,7 +27,6 @@ export class UserComponent implements OnInit {
   successMessage: string | null = null;
   showSuccessMessage = false;
 
-  // Para la pestaña de reservas
   userReservations: ReservationOutDto[] = [];
   filteredReservations: ReservationOutDto[] = [];
   loadingReservations = false;
@@ -166,13 +165,11 @@ export class UserComponent implements OnInit {
       return;
     }
 
-    // Guardar el email original para comparar después
     const originalEmail = this.userData.email;
 
     this.loading = true;
     this.errorMessage = null;
 
-    // Quitar cualquier error previo de email duplicado
     this.userForm.get('email')?.setErrors(null);
 
     const updatedUser: any = {
@@ -218,7 +215,6 @@ export class UserComponent implements OnInit {
             err.error.message?.includes('ya está en uso') ||
             err.status === 409)) {
 
-            // Verificar que userForm no sea nulo antes de usarlo
             if (this.userForm) {
                 this.userForm.get('email')?.setErrors({'emailExists': true});
             }
@@ -258,7 +254,6 @@ export class UserComponent implements OnInit {
   }
 
   canCancelReservation(reservation: ReservationOutDto): boolean {
-    // Solo permite cancelar reservas futuras (que empiezan al menos una hora después)
     const reservationStart = new Date(reservation.startDate);
     const now = new Date();
     const oneHour = 60 * 60 * 1000;
@@ -314,7 +309,6 @@ export class UserComponent implements OnInit {
     this.successMessage = message;
     this.showSuccessMessage = true;
 
-    // Ocultar mensaje después de 3 segundos
     setTimeout(() => {
       this.showSuccessMessage = false;
       this.cdr.detectChanges();

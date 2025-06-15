@@ -25,27 +25,22 @@ export class ReportViewComponent implements OnInit {
   report: ReportOutDto | null = null;
   isLoading = true;
   errorMessage = '';
-
-  // Información relacionada con el reporte
   reporterName = '';
   floorName = '';
   roomName = '';
   workstationName = '';
   managerName = '';
 
-  // Para los estados y acciones
   statusForm: FormGroup;
   assignManagerForm: FormGroup;
   showStatusDropdown = false;
 
-  // Para traducir estados
   statusLabels: { [key in ReportStatus]: string } = {
     'pending': 'Pendiente',
     'in_progress': 'En progreso',
     'resolved': 'Resuelto'
   };
 
-  // Para colorear los estados
   statusClasses: { [key in ReportStatus]: string } = {
     'pending': 'status-pending',
     'in_progress': 'status-in-progress',
@@ -82,7 +77,6 @@ export class ReportViewComponent implements OnInit {
     this.isAdmin = userRole === 'admin';
     this.isSecretary = userRole === 'secretary';
 
-    // Si no es admin ni secretario, redirigir
     if (!this.isAdmin && !this.isSecretary) {
       this.router.navigate(['/reports']);
       return;
@@ -112,12 +106,10 @@ export class ReportViewComponent implements OnInit {
       next: (report) => {
         this.report = report;
 
-        // Cargar datos relacionados
         this.loadReporterInfo(report.userId);
         this.loadLocationInfo(report.floorId, report.roomId, report.workstationId);
         this.loadManagerInfo(report.assignedManagerId);
 
-        // Establecer estado actual en el formulario
         this.statusForm.get('status')?.setValue(report.status);
       },
       error: (error) => {
@@ -140,7 +132,6 @@ export class ReportViewComponent implements OnInit {
   }
 
   loadLocationInfo(floorId: number, roomId: number | null, workstationId: number | null): void {
-    // Cargar información del piso
     this.floorService.getById(floorId).subscribe({
       next: (floor) => {
         this.floorName = floor.floorName;
@@ -148,7 +139,6 @@ export class ReportViewComponent implements OnInit {
       }
     });
 
-    // Cargar información de la sala si existe
     if (roomId) {
       this.roomService.getById(roomId).subscribe({
         next: (room) => {
@@ -158,7 +148,6 @@ export class ReportViewComponent implements OnInit {
       });
     }
 
-    // Cargar información de la estación de trabajo si existe
     if (workstationId) {
       this.workstationService.getById(workstationId).subscribe({
         next: (workstation) => {

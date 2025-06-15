@@ -1,4 +1,3 @@
-// src/app/features/reservations/reservations-routing-module.ts
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ReservationsComponent} from './reservations.component';

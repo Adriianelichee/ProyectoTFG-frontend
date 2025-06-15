@@ -33,10 +33,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkUserReservationsAndServices();
-    // Verificar el estado de autenticación inicial
     this.checkAuthStatus();
 
-    // Verificar periódicamente el estado de autenticación (cada 30 segundos)
     this.authCheckSubscription = interval(30000).subscribe(() => {
       this.checkAuthStatus();
     });
@@ -54,7 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Verificar si el usuario tiene reservas
     this.reservationService.getByUser(user.userId).subscribe({
       next: (reservations) => {
         this.userHasReservationsOrServices = reservations && reservations.length > 0;
@@ -71,12 +68,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (contactElement) {
         contactElement.scrollIntoView({behavior: 'smooth'});
       }
-    }, 100); // Pequeño retraso para asegurar que la navegación se complete primero
+    }, 100);
   }
 
 
   ngOnDestroy(): void {
-    // Limpiar la suscripción cuando el componente se destruye
     if (this.authCheckSubscription) {
       this.authCheckSubscription.unsubscribe();
     }
@@ -85,12 +81,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   checkAuthStatus(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
 
-    // Si está logueado, verificar si es administrador
     if (this.isLoggedIn) {
-      // Verificación de rol admin (asumiendo que hay un método hasRole en AuthService)
       this.isAdmin = this.authService.hasRole('admin');
       this.isSecretary = this.authService.hasRole('secretary');
-      // Obtener nombre de usuario si está disponible
       this.userName = this.getUserNameFromToken() || 'Usuario';
     }
   }
@@ -112,17 +105,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.showUserMenu = false;
     this.isLoggedIn = false;
-    this.isAdmin = false; // Resetear el rol de admin al cerrar sesión
+    this.isAdmin = false;
     this.router.navigate(['/']);
   }
 
-  // Método auxiliar para extraer el nombre del usuario del token JWT
   private getUserNameFromToken(): string | null {
     const token = this.authService.getToken();
     if (!token) return null;
 
     try {
-      // Decodificar el token JWT (parte del payload)
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.name || payload.sub || null;
     } catch (e) {

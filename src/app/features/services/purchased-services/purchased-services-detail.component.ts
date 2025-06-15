@@ -47,7 +47,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    // Establecer la fecha mínima como hoy en formato YYYY-MM-DD
     this.minDate = format(new Date(), 'yyyy-MM-dd');
     this.minExpirationDate = this.minDate;
   }
@@ -66,7 +65,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
       }
     });
 
-    // Escuchar cambios en la fecha de compra para actualizar validaciones
     this.purchaseDateControl.valueChanges.subscribe(value => {
       if (value) {
         this.minExpirationDate = value;
@@ -74,7 +72,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
       }
     });
 
-    // Escuchar cambios en la selección de servicio
     this.serviceIdControl.valueChanges.subscribe(serviceId => {
       if (serviceId) {
         this.selectedService = this.availableServices.find(s => s.serviceId === +serviceId) || null;
@@ -84,7 +81,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     });
   }
 
-  // Validador personalizado para la fecha de expiración
   private expirationDateValidator(control: AbstractControl): ValidationErrors | null {
     const form = control.parent;
     if (!form) return null;
@@ -92,9 +88,9 @@ export class PurchasedServicesDetailComponent implements OnInit {
     const purchaseDate = form.get('purchaseDate')?.value;
     const expirationDate = control.value;
 
-    if (!expirationDate) return null; // No es obligatorio
+    if (!expirationDate) return null;
 
-    if (!purchaseDate) return null; // No podemos validar sin fecha de compra
+    if (!purchaseDate) return null;
 
     return expirationDate < purchaseDate ?
       {'expirationBeforePurchase': 'La fecha de expiración no puede ser anterior a la fecha de compra'} :
@@ -115,7 +111,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     });
   }
 
-  // Validador para evitar fechas en el pasado
   private dateNotInPastValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
 
@@ -169,14 +164,12 @@ export class PurchasedServicesDetailComponent implements OnInit {
 
     this.purchasedServiceService.getById(id).subscribe({
       next: (data: PurchasedServiceOutDto) => {
-        // Verificar que el servicio adquirido pertenece a la compañía del usuario
         if (data.companyId !== this.companyId) {
           this.errorMessage = 'No tiene permisos para editar este servicio adquirido';
           this.router.navigate(['/home']);
           return;
         }
 
-        // Formatear las fechas para el formato YYYY-MM-DD que espera el input type="date"
         const purchaseDate = data.purchaseDate ? format(new Date(data.purchaseDate), 'yyyy-MM-dd') : '';
         const expirationDate = data.expirationDate ? format(new Date(data.expirationDate), 'yyyy-MM-dd') : '';
 
@@ -213,7 +206,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
 
     this.errorMessage = null;
 
-    // Ajustar las fechas para compensar la diferencia de zona horaria
     const purchaseDate = this.purchaseDateControl.value ?
       this.adjustDateForTimezone(this.purchaseDateControl.value, '00:00:00') : "";
 
@@ -258,7 +250,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     }
   }
 
-  // Marcar todos los campos como touched para mostrar errores
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -269,13 +260,10 @@ export class PurchasedServicesDetailComponent implements OnInit {
   }
 
   private adjustDateForTimezone(dateStr: string, timeStr: string): string {
-    // Crear fecha con la hora especificada
     const date = new Date(`${dateStr}T${timeStr}`);
 
-    // Obtener el offset de la zona horaria local en minutos
     const timezoneOffset = date.getTimezoneOffset();
 
-    // Ajustar la fecha sumando el offset (en milisegundos)
     date.setMinutes(date.getMinutes() - timezoneOffset);
 
     return date.toISOString();
@@ -285,7 +273,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     void this.router.navigate(['/services/purchased']);
   }
 
-  // Getters para el template
   get serviceIdControl() {
     return this.purchaseForm.get('serviceId')!;
   }
@@ -302,7 +289,6 @@ export class PurchasedServicesDetailComponent implements OnInit {
     return this.purchaseForm.get('termsAccepted')!;
   }
 
-  // Métodos para verificar errores específicos
   hasExpirationDateError(): boolean {
     return this.expirationDateControl.touched &&
       this.expirationDateControl.errors?.['expirationBeforePurchase'] !== undefined;

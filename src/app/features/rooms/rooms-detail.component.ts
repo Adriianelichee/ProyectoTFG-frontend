@@ -21,13 +21,13 @@ import { Component, OnInit } from '@angular/core';
     isEdit = false;
     loading = false;
     errorMessage: string | null = null;
-    floors: FloorOutDto[] = []; // Lista de plantas disponibles
-    loadingFloors = false; // Flag para carga de plantas
+    floors: FloorOutDto[] = [];
+    loadingFloors = false;
 
     constructor(
       private fb: FormBuilder,
       private roomService: RoomService,
-      private floorService: FloorService, // Servicio para cargar plantas
+      private floorService: FloorService,
       private route: ActivatedRoute,
       private router: Router
     ) {}
@@ -41,7 +41,7 @@ import { Component, OnInit } from '@angular/core';
         floorId: [null, [Validators.required, Validators.min(1)]]
       });
 
-      // Cargar la lista de plantas disponibles
+
       this.loadFloors();
 
       this.route.paramMap.subscribe((params) => {
@@ -54,7 +54,7 @@ import { Component, OnInit } from '@angular/core';
       });
     }
 
-    // Nuevo método para cargar las plantas
+
     private loadFloors(): void {
       this.loadingFloors = true;
       this.floorService.getAll().subscribe({

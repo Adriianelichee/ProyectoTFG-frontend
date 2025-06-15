@@ -1,15 +1,13 @@
-// src/app/features/companies/companies.module.ts
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {ReactiveFormsModule} from '@angular/forms';
 import {CompaniesRoutingModule} from './companies-routing-module';
-import {CompaniesListComponent} from './companies-list.component';
-import {CompaniesDetailComponent} from './companies-detail.component';
 
+// Creamos un modulo para gestionar la funcionalidad de empresas. Creamos el modulo tambien para cada componente, identificarlo facilmente
 @NgModule({
   imports: [
+    // Importamos el modulo de rutas para la navegacion de empresas
     CompaniesRoutingModule,
   ]
 })
+// Definimos la clase del modulo que contendrá los componentes
 export class CompaniesModule {
 }

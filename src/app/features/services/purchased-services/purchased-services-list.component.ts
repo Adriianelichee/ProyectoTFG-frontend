@@ -78,14 +78,12 @@ export class PurchasedServicesListComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.purchasedServices];
 
-    // Aplicar filtro de estado
     if (this.activeFilter === 'active') {
       filtered = filtered.filter(service => !this.isServiceExpired(service));
     } else if (this.activeFilter === 'expired') {
       filtered = filtered.filter(service => this.isServiceExpired(service));
     }
 
-    // Aplicar búsqueda por término
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(service => {
@@ -124,7 +122,6 @@ export class PurchasedServicesListComponent implements OnInit {
     const today = new Date();
     const expirationDate = new Date(service.expirationDate);
 
-    // Consideramos "próximo a expirar" si faltan menos de 30 días
     const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
     return !this.isServiceExpired(service) &&
            (expirationDate.getTime() - today.getTime()) < thirtyDaysInMs;

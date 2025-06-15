@@ -1,4 +1,3 @@
-// src/app/features/rooms/rooms-routing.ts
 import { Routes, RouterModule } from '@angular/router';
 import { RoomsListComponent } from './rooms-list.component';
 import { RoomsDetailComponent } from './rooms-detail.component';

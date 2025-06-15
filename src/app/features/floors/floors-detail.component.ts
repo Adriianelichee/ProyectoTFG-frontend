@@ -27,11 +27,9 @@ export class FloorsDetailComponent implements OnInit {
   loadingWorkstations = false;
   errorMessage: string | null = null;
 
-  // Arrays para almacenar las salas y puestos de trabajo disponibles
   availableRooms: RoomOutDto[] = [];
   availableWorkstations: WorkstationOutDto[] = [];
 
-  // Arrays para almacenar las salas y puestos seleccionados (solo para edición)
   selectedRoomIds: number[] = [];
   selectedWorkstationIds: number[] = [];
 
@@ -55,7 +53,6 @@ export class FloorsDetailComponent implements OnInit {
         this.isEdit = true;
         this.loadFloor(this.floorId);
       } else {
-        // Si es creación, cargamos las salas y puestos disponibles
         this.loadAvailableSpaces();
       }
     });

@@ -12,12 +12,10 @@ export class DateFormatPipe implements PipeTransform {
     try {
       const date = new Date(value as string | number | Date);
 
-      // Verificar si la fecha es válida
       if (isNaN(date.getTime())) {
         return '';
       }
 
-      // Formatear según el formato solicitado
       switch (format) {
         case 'short':
           return this.formatShort(date, locale);
@@ -97,7 +95,6 @@ export class DateFormatPipe implements PipeTransform {
 
   private formatCustom(date: Date, format: string, locale: string): string {
     try {
-      // Para formatos personalizados simples
       format = format.replace('dd', date.getDate().toString().padStart(2, '0'));
       format = format.replace('MM', (date.getMonth() + 1).toString().padStart(2, '0'));
       format = format.replace('yyyy', date.getFullYear().toString());

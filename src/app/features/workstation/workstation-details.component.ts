@@ -34,7 +34,6 @@ import { Component, OnInit } from '@angular/core';
 
       ngOnInit(): void {
         this.workstationForm = this.fb.group({
-          // Mantenemos los mismos campos en el formulario para la UI
           workstationName: ['', [Validators.required, Validators.maxLength(45)]],
           hourlyRate: [0, [Validators.required, Validators.min(0)]],
           position: ['', [Validators.required]],
@@ -42,7 +41,6 @@ import { Component, OnInit } from '@angular/core';
           floorId: [null, [Validators.required, Validators.min(1)]]
         });
 
-        // Cargar la lista de plantas disponibles
         this.loadFloors();
 
         this.route.paramMap.subscribe((params) => {
@@ -125,7 +123,6 @@ import { Component, OnInit } from '@angular/core';
         void this.router.navigate(['/workstations']);
       }
 
-      // Mantenemos los getters para la UI
       get workstationNameControl() {
         return this.workstationForm.get('workstationName')!;
       }

@@ -1,4 +1,3 @@
-// src/app/app-routing.ts
 import {Routes} from '@angular/router';
 import {AuthGuard} from './core/auth/auth-guard';
 import {FloorsViewComponent} from './features/floors/floors-view.component';

@@ -61,7 +61,6 @@ export class ReportDetailComponent implements OnInit {
     this.createForm();
     this.loadFloors();
 
-    // Observar cambios en el piso seleccionado
     this.reportForm.get('floorId')?.valueChanges.subscribe(floorId => {
       if (floorId) {
         this.reportForm.get('roomId')?.setValue(null);
@@ -74,7 +73,6 @@ export class ReportDetailComponent implements OnInit {
       }
     });
 
-    // Observar cambios en la habitación seleccionada
     this.reportForm.get('roomId')?.valueChanges.subscribe(roomId => {
       if (roomId) {
         this.reportForm.get('workstationId')?.setValue(null);
@@ -162,10 +160,9 @@ export class ReportDetailComponent implements OnInit {
       })
     ).subscribe({
       next: (workstations) => {
-        // Filtramos por la sala seleccionada si existe
         const roomId = this.reportForm.get('roomId')?.value;
         if (roomId) {
-          this.workstations = workstations.filter(ws => true); // Aquí iría el filtro por sala
+          this.workstations = workstations.filter(ws => true);
         } else {
           this.workstations = workstations;
         }
@@ -193,7 +190,6 @@ export class ReportDetailComponent implements OnInit {
       return;
     }
 
-    // Creamos el objeto con todas las propiedades requeridas
     const reportData = {
       userId: userId,
       description: this.reportForm.get('description')?.value,
@@ -201,10 +197,9 @@ export class ReportDetailComponent implements OnInit {
       roomId: this.reportForm.get('roomId')?.value || null,
       workstationId: this.reportForm.get('workstationId')?.value || null,
       category: this.reportForm.get('category')?.value,
-      // Corrige estas propiedades:
       status: 'pending' as ReportStatus,
       reportDate: new Date().toISOString(),
-      assignedManagerId: 0  // Usa 0 en lugar de null para indicar que no hay asignación
+      assignedManagerId: 0
     };
 
     this.reportService.create(reportData).pipe(

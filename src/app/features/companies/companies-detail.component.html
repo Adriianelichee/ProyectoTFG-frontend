@@ -12,12 +12,7 @@
 
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
-    <form
-      [formGroup]="companyForm"
-      (ngSubmit)="onSubmit()"
-      *ngIf="canEdit && !loading"
-      autocomplete="off"
-    >
+    <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" *ngIf="canEdit && !loading" autocomplete="off">
       <div class="form-group">
         <label for="companyName">Nombre de la Empresa</label>
         <div class="input-container">

@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
 import { NosotrosRoutingModule } from './nosotros-routing-module';
 
 

@@ -8,6 +8,6 @@ export interface PaymentOutDto {
   amount: number;
   paymentType: PaymentType;
   paymentMethod: PaymentMethod;
-  paymentDate: string;       // string ISO
+  paymentDate: string;
   paymentStatus: PaymentStatus;
 }

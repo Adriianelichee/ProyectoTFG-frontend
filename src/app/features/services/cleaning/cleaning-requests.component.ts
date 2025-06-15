@@ -12,7 +12,6 @@ import {RoomOutDto} from '../../../core/models/room-out-dto';
 import {UserOutDto} from '../../../core/models/user-out-dto';
 import {format} from 'date-fns';
 
-// Interfaces adicionales para el componente
 interface CleaningEvent {
   date: string;
   action: string;
@@ -33,7 +32,7 @@ interface CleaningRequestDto extends CleaningOutDto {
   imports: [CommonModule, FormsModule]
 })
 export class CleaningRequestsComponent implements OnInit {
-  // Datos
+
   cleaningRequests: CleaningRequestDto[] = [];
   filteredRequests: CleaningRequestDto[] = [];
   paginatedRequests: CleaningRequestDto[] = [];
@@ -41,25 +40,20 @@ export class CleaningRequestsComponent implements OnInit {
   rooms: RoomOutDto[] = [];
   users: UserOutDto[] = [];
 
-  // Estado seleccionado
   selectedRequest: CleaningRequestDto | null = null;
 
-  // Filtros
   searchTerm: string = '';
   statusFilter: string = 'all';
   dateFilterStart: string | null = null;
   dateFilterEnd: string | null = null;
 
-  // Clasificación
   sortColumn: string = 'cleaningDate';
   sortDirection: 'asc' | 'desc' = 'desc';
 
-  // Paginación
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 0;
 
-  // UI
   loading: boolean = false;
   errorMessage: string | null = null;
   showFilterDropdown: boolean = false;
@@ -91,7 +85,6 @@ export class CleaningRequestsComponent implements OnInit {
     this.cleaningService.getAll().subscribe({
       next: (cleanings: CleaningOutDto[]) => {
         this.cleaningRequests = cleanings.map(cleaning => {
-          // Extraer estado del campo notes
           const status = this.extractStatusFromNotes(cleaning.notes);
 
           return {
@@ -111,7 +104,6 @@ export class CleaningRequestsComponent implements OnInit {
     });
   }
 
-  // Extraemos el estado del campo notes
   private extractStatusFromNotes(notes: string | null): 'pending' | 'inProgress' | 'completed' | 'cancelled' {
     if (!notes) return 'pending';
 
@@ -122,7 +114,6 @@ export class CleaningRequestsComponent implements OnInit {
     return 'pending';
   }
 
-  // Extraemos las notas reales sin el prefijo de estado
   private extractActualNotes(notes: string | null): string {
     if (!notes) return '';
 
@@ -157,12 +148,10 @@ export class CleaningRequestsComponent implements OnInit {
       next: (users) => {
         this.users = users;
 
-        // Cargar nombres de compañías para cada usuario
         users.forEach(user => {
           if (user.companyId) {
             this.companyService.getById(user.companyId).subscribe({
               next: (company) => {
-                // Actualizar las solicitudes con el nombre de la compañía
                 this.cleaningRequests = this.cleaningRequests.map(req => {
                   if (req.userId === user.userId) {
                     return {...req, companyName: company.companyName};
@@ -170,7 +159,6 @@ export class CleaningRequestsComponent implements OnInit {
                   return req;
                 });
 
-                // Actualizar la lista filtrada si es necesario
                 if (this.filteredRequests.length > 0) {
                   this.applyFilters();
                 }
@@ -185,11 +173,9 @@ export class CleaningRequestsComponent implements OnInit {
     });
   }
 
-  // Métodos para filtrado y ordenación
   applyFilters(): void {
     this.filteredRequests = [...this.cleaningRequests];
 
-    // Filtrar por término de búsqueda
     if (this.searchTerm.trim() !== '') {
       const searchTermLower = this.searchTerm.toLowerCase();
       this.filteredRequests = this.filteredRequests.filter(request => {
@@ -204,14 +190,12 @@ export class CleaningRequestsComponent implements OnInit {
       });
     }
 
-    // Filtrar por estado
     if (this.statusFilter !== 'all') {
       this.filteredRequests = this.filteredRequests.filter(request =>
         request.status === this.statusFilter
       );
     }
 
-    // Filtrar por fecha
     if (this.dateFilterStart) {
       const startDate = new Date(this.dateFilterStart);
       startDate.setHours(0, 0, 0, 0);
@@ -232,23 +216,18 @@ export class CleaningRequestsComponent implements OnInit {
       });
     }
 
-    // Ordenar resultados
     this.sortRequests();
 
-    // Actualizar paginación
     this.totalPages = Math.ceil(this.filteredRequests.length / this.pageSize);
 
-    // Resetear a la primera página si es necesario
     if (this.currentPage > this.totalPages) {
       this.currentPage = 1;
     }
 
-    // Aplicar paginación
     this.updatePaginatedRequests();
   }
 
   sortBy(column: string): void {
-    // Si hacemos clic en la misma columna, invertimos la dirección
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
@@ -264,7 +243,6 @@ export class CleaningRequestsComponent implements OnInit {
     this.filteredRequests.sort((a, b) => {
       let valueA, valueB;
 
-      // Extraer los valores a comparar según la columna
       switch (this.sortColumn) {
         case 'cleaningId':
           valueA = a.cleaningId;
@@ -283,7 +261,6 @@ export class CleaningRequestsComponent implements OnInit {
           valueB = b.cleaningId;
       }
 
-      // Comparar según la dirección
       if (valueA < valueB) {
         return this.sortDirection === 'asc' ? -1 : 1;
       }
@@ -294,7 +271,6 @@ export class CleaningRequestsComponent implements OnInit {
     });
   }
 
-  // Métodos para paginación
   updatePaginatedRequests(): void {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     this.paginatedRequests = this.filteredRequests.slice(
@@ -324,7 +300,6 @@ export class CleaningRequestsComponent implements OnInit {
     return {start, end};
   }
 
-  // Métodos para filtros
   toggleFilterDropdown(): void {
     this.showFilterDropdown = !this.showFilterDropdown;
   }
@@ -344,7 +319,6 @@ export class CleaningRequestsComponent implements OnInit {
     this.showFilterDropdown = false;
   }
 
-  // Métodos de ayuda para obtener datos relacionados
   getFloorName(floorId: number): string {
     const floor = this.floors.find(f => f.floorId === floorId);
     return floor ? floor.floorName : `Piso ${floorId}`;
@@ -371,7 +345,6 @@ export class CleaningRequestsComponent implements OnInit {
     return request?.companyName || 'Empresa';
   }
 
-  // Métodos para formateo de fechas
   formatDate(dateString: string): string {
     return format(new Date(dateString), 'dd/MM/yyyy');
   }
@@ -384,7 +357,6 @@ export class CleaningRequestsComponent implements OnInit {
     return format(new Date(dateString), 'dd/MM/yyyy HH:mm');
   }
 
-  // Métodos para iconos y etiquetas
   getStatusIcon(status: string): string {
     switch (status) {
       case 'pending':
@@ -426,7 +398,6 @@ export class CleaningRequestsComponent implements OnInit {
     return this.cleaningRequests.filter(r => r.status === status).length;
   }
 
-  // Métodos para gestión de la modal
   viewDetails(request: CleaningRequestDto): void {
     this.selectedRequest = {...request};
   }
@@ -435,24 +406,19 @@ export class CleaningRequestsComponent implements OnInit {
     this.selectedRequest = null;
   }
 
-  // Métodos para gestión de solicitudes
   startCleaning(request: CleaningRequestDto): void {
     if (request.status !== 'pending') return;
 
     this.loading = true;
 
-    // Obtener las notas actuales sin el estado
     const actualNotes = this.extractActualNotes(request.notes);
-    // Crear nuevas notas con el nuevo estado
     const newNotes = `status:inProgress|${actualNotes}`;
 
-    // Actualizar en el backend
     this.cleaningService.update(request.cleaningId, {
       ...request,
       notes: newNotes
     }).subscribe({
       next: () => {
-        // Actualizar localmente
         this.cleaningRequests = this.cleaningRequests.map(req => {
           if (req.cleaningId === request.cleaningId) {
             return {
@@ -485,18 +451,14 @@ export class CleaningRequestsComponent implements OnInit {
 
     this.loading = true;
 
-    // Obtener las notas actuales sin el estado
     const actualNotes = this.extractActualNotes(request.notes);
-    // Crear nuevas notas con el nuevo estado
     const newNotes = `status:completed|${actualNotes}`;
 
-    // Actualizar en el backend
     this.cleaningService.update(request.cleaningId, {
       ...request,
       notes: newNotes
     }).subscribe({
       next: () => {
-        // Actualizar localmente
         this.cleaningRequests = this.cleaningRequests.map(req => {
           if (req.cleaningId === request.cleaningId) {
             return {
@@ -529,18 +491,14 @@ export class CleaningRequestsComponent implements OnInit {
 
     this.loading = true;
 
-    // Obtener las notas actuales sin el estado
     const actualNotes = this.extractActualNotes(request.notes);
-    // Crear nuevas notas con el nuevo estado
     const newNotes = `status:cancelled|${actualNotes}`;
 
-    // Actualizar en el backend
     this.cleaningService.update(request.cleaningId, {
       ...request,
       notes: newNotes
     }).subscribe({
       next: () => {
-        // Actualizar localmente
         this.cleaningRequests = this.cleaningRequests.map(req => {
           if (req.cleaningId === request.cleaningId) {
             return {
@@ -560,7 +518,6 @@ export class CleaningRequestsComponent implements OnInit {
 
         this.loading = false;
 
-        // Si estamos en el modal y cancelamos, cerrar el modal después de un breve retraso
         if (this.selectedRequest?.cleaningId === request.cleaningId) {
           setTimeout(() => this.closeModal(), 1500);
         }

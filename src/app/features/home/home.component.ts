@@ -119,12 +119,10 @@ export class HomeComponent implements OnInit {
     this.loadFloors();
   }
 
-  // Método para cambiar entre tabs
   setActiveTab(index: number): void {
     this.activeTabIndex = index;
   }
 
-  // Método para determinar si un tab está activo
   isActiveTab(index: number): boolean {
     return this.activeTabIndex === index;
   }
@@ -150,10 +148,8 @@ export class HomeComponent implements OnInit {
 
   toggleFaqItem(index: number): void {
     if (this.activeFaqIndex === index) {
-      // Si ya está activa, la desactivamos
       this.activeFaqIndex = null;
     } else {
-      // Si no está activa, la activamos
       this.activeFaqIndex = index;
     }
   }
@@ -194,7 +190,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Método para mostrar vista previa para usuarios no autenticados
   showPreview(type: string, id: number): void {
     if (!this.isLoggedIn) {
       this.showLoginToast = true;
@@ -204,17 +199,14 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  // Método para vista previa de salas
   viewRoomPreview(room: RoomOutDto): void {
     this.showPreview('room', room.roomId);
   }
 
-  // Método para vista previa de puestos de trabajo
   viewWorkstationPreview(workstation: WorkstationOutDto): void {
     this.showPreview('workstation', workstation.workstationId);
   }
 
-  // Método para vista previa de servicios
   viewServicePreview(service: ServiceOutDto): void {
     this.showPreview('service', service.serviceId);
   }

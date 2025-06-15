@@ -53,7 +53,6 @@ export class CleaningFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    // Establecer la fecha mínima como ahora en formato YYYY-MM-DDThh:mm
     const now = new Date();
     this.minDate = format(now, "yyyy-MM-dd'T'HH:mm");
   }
@@ -72,7 +71,6 @@ export class CleaningFormComponent implements OnInit {
       }
     });
 
-    // Manejamos los cambios en el selector de piso
     this.floorIdControl.valueChanges.subscribe(floorId => {
       this.roomIdControl.setValue(null);
       this.workstationIdControl.setValue(null);
@@ -85,7 +83,6 @@ export class CleaningFormComponent implements OnInit {
       }
     });
 
-    // Manejamos los cambios en el selector de sala
     this.roomIdControl.valueChanges.subscribe(roomId => {
       this.workstationIdControl.setValue(null);
 
@@ -114,7 +111,6 @@ export class CleaningFormComponent implements OnInit {
       this.userId = user.userId;
       this.companyId = user.companyId;
 
-      // Cargar el nombre de la compañía
       this.companyService.getById(this.companyId).subscribe({
         next: (company) => {
           this.companyName = company.companyName;
@@ -125,7 +121,6 @@ export class CleaningFormComponent implements OnInit {
       });
     } else {
       this.errorMessage = 'No se pudo obtener la información del usuario';
-      // Redireccionar al login si no hay usuario autenticado
       setTimeout(() => {
         this.router.navigate(['/auth/login']);
       }, 2000);
@@ -147,7 +142,6 @@ export class CleaningFormComponent implements OnInit {
       }
     });
 
-    // Cargamos todas las habitaciones y puestos de trabajo disponibles
     this.loadAllRooms();
     this.loadAllWorkstations();
   }
@@ -179,11 +173,8 @@ export class CleaningFormComponent implements OnInit {
   }
 
   private filterWorkstationsByRoom(roomId: number): void {
-    // Necesitamos modificar esta función para adaptarla a la estructura de WorkstationOutDto
-    // Ya que WorkstationOutDto no tiene roomId, sino floorId
     const selectedRoom = this.rooms.find(room => room.roomId === roomId);
     if (selectedRoom) {
-      // Filtramos por el mismo floorId que la sala seleccionada
       this.filteredWorkstations = this.workstations.filter(
         workstation => workstation.floorId === selectedRoom.floorId
       );
@@ -198,17 +189,14 @@ export class CleaningFormComponent implements OnInit {
 
     this.cleaningService.getById(id).subscribe({
       next: (data: CleaningOutDto) => {
-        // Verificar que la solicitud pertenece al usuario actual
         if (data.userId !== this.userId) {
           this.errorMessage = 'No tiene permiso para editar esta solicitud';
           this.router.navigate(['/services/cleaning']);
           return;
         }
 
-        // Formatear la fecha para el formato YYYY-MM-DDThh:mm que espera el input datetime-local
         const cleaningDate = data.cleaningDate ? format(new Date(data.cleaningDate), "yyyy-MM-dd'T'HH:mm") : '';
 
-        // Cargar datos en el formulario
         this.cleaningForm.patchValue({
           cleaningDate: cleaningDate,
           floorId: data.floorId,
@@ -217,7 +205,6 @@ export class CleaningFormComponent implements OnInit {
           notes: data.notes
         });
 
-        // Aseguramos que se filtren las salas y puestos de trabajo
         if (data.floorId) {
           this.filterRoomsByFloor(data.floorId);
         }
@@ -295,32 +282,26 @@ export class CleaningFormComponent implements OnInit {
 
   private formatDateForBackend(dateString: string): string {
     try {
-      // Crear un objeto Date a partir del string
       const date = new Date(dateString);
 
-      // Verificar que la fecha es válida
       if (isNaN(date.getTime())) {
         throw new Error('Fecha inválida');
       }
 
-      // Formatear la fecha en formato ISO 8601 (UTC)
       return date.toISOString();
     } catch (error) {
       console.error('Error al formatear la fecha:', error);
-      // En caso de error, devolver la fecha actual
       return new Date().toISOString();
     }
   }
 
   private validateIds(): boolean {
-    // Verificar que el floorId existe
     const floorExists = this.floors.some(floor => floor.floorId === +this.floorIdControl.value);
     if (!floorExists) {
       this.errorMessage = 'El piso seleccionado no existe';
       return false;
     }
 
-    // Verificar que el roomId existe si se ha seleccionado
     if (this.roomIdControl.value) {
       const roomExists = this.rooms.some(room => room.roomId === +this.roomIdControl.value);
       if (!roomExists) {
@@ -329,7 +310,6 @@ export class CleaningFormComponent implements OnInit {
       }
     }
 
-    // Verificar que el workstationId existe si se ha seleccionado
     if (this.workstationIdControl.value) {
       const workstationExists = this.workstations.some(
         workstation => workstation.workstationId === +this.workstationIdControl.value
@@ -347,7 +327,6 @@ export class CleaningFormComponent implements OnInit {
     void this.router.navigate(['/services/cleaning/requests']);
   }
 
-  // Getters para el template
   get cleaningDateControl() {
     return this.cleaningForm.get('cleaningDate')!;
   }

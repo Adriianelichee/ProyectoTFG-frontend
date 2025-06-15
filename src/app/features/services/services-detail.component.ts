@@ -98,7 +98,6 @@ export class ServicesDetailComponent implements OnInit {
     void this.router.navigate(['/services']);
   }
 
-  // Getters para el template
   get serviceNameControl() {
     return this.serviceForm.get('serviceName')!;
   }

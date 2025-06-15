@@ -14,7 +14,6 @@ export class AdminGuard implements CanActivate {
       return true;
     }
 
-    // Redirigir a la página principal si no es administrador
     return this.router.createUrlTree(['/']);
   }
 }

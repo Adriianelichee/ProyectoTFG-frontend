@@ -9,7 +9,6 @@ import {Observable, of} from 'rxjs';
 import {PurchasedServiceOutDto} from '../../../core/models/purchased-service-out-dto';
 import {ServiceOutDto} from '../../../core/models/service-out-dto';
 
-// Interfaz para la vista combinada
 interface PurchasedServiceView {
   purchasedServiceId: number;
   purchaseDate: string;
@@ -19,7 +18,7 @@ interface PurchasedServiceView {
   serviceName: string;
   description: string;
   price: number;
-  status?: string; // Calculado basado en fechas
+  status?: string;
 }
 
 @Component({
@@ -61,10 +60,8 @@ export class PurchasedViewComponent implements OnInit {
     this.purchasedServiceService.getById(this.serviceId)
       .pipe(
         switchMap((purchasedService: PurchasedServiceOutDto) => {
-          // Una vez que tenemos el servicio comprado, obtenemos los detalles del servicio
           return this.serviceService.getById(purchasedService.serviceId).pipe(
             map((serviceDetails: ServiceOutDto) => {
-              // Combinamos ambos resultados
               return this.combineServiceData(purchasedService, serviceDetails);
             })
           );
@@ -83,7 +80,6 @@ export class PurchasedViewComponent implements OnInit {
   }
 
   private combineServiceData(purchasedService: PurchasedServiceOutDto, serviceDetails: ServiceOutDto): PurchasedServiceView {
-    // Calcular el estado del servicio basado en las fechas
     const now = new Date();
     const purchaseDate = new Date(purchasedService.purchaseDate);
     const expirationDate = purchasedService.expirationDate ? new Date(purchasedService.expirationDate) : null;
@@ -95,7 +91,6 @@ export class PurchasedViewComponent implements OnInit {
       status = 'pending';
     }
 
-    // Combinar los datos en un solo objeto
     return {
       purchasedServiceId: purchasedService.purchasedServiceId,
       purchaseDate: purchasedService.purchaseDate,
@@ -147,7 +142,6 @@ export class PurchasedViewComponent implements OnInit {
     }
   }
 
-  // Calcular duración en formato legible
   getDuration(): string {
     if (!this.purchasedService || !this.purchasedService.purchaseDate || !this.purchasedService.expirationDate) {
       return 'No disponible';
