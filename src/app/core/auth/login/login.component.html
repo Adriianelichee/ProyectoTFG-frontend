@@ -1,7 +1,7 @@
 <div class="login-wrapper">
   <div class="login-card glass tilt-card">
     <div class="logo-section">
-      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo" />
+      <img src="/coworking-logo.jpg" alt="Logo CoWork Space" class="logo"/>
       <h1 class="brand">CoWork Space</h1>
     </div>
 
@@ -36,14 +36,15 @@
           <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
         </button>
       </div>
-      <div class="error" *ngIf="passwordControl.invalid && passwordControl.touched">
-        <small>La contraseña es obligatoria.</small>
+      <div class="error" *ngIf="(passwordControl.invalid && passwordControl.touched) || errorMessage">
+        <small *ngIf="passwordControl.hasError('required')">La contraseña es obligatoria.</small>
+        <small *ngIf="errorMessage">Credenciales inválidas. Por favor, verifica tu email y/o contraseña.</small>
       </div>
 
       <!-- Opciones -->
       <div class="options">
         <label class="remember-me">
-          <input type="checkbox" />
+          <input type="checkbox"/>
           <span class="checkmark"></span>
           Recuérdame
         </label>
@@ -55,7 +56,6 @@
         <span *ngIf="!loading">Iniciar Sesión</span>
         <span *ngIf="loading" class="spinner"></span>
       </button>
-
 
     </form>
   </div>

@@ -63,6 +63,9 @@
               <a routerLink="/auth/register" *ngIf="isAdmin || isSecretary">
                 <i class="fas fa-user-plus"></i> Registrar Usuario
               </a>
+              <a routerLink="/companies" *ngIf="isAdmin">
+                <i class="fas fa-building"></i> Compañías
+              </a>
               <a routerLink="/companies/new" *ngIf="isAdmin">
                 <i class="fas fa-building"></i> Registrar Compañía
               </a>
@@ -99,7 +102,6 @@
         <li><a routerLink="/workstations" (click)="closeMobileMenu()"><i class="fas fa-laptop"></i> Estaciones</a></li>
         <li><a routerLink="/services" (click)="closeMobileMenu()"><i class="fas fa-concierge-bell"></i> Servicios</a>
         </li>
-        <li><a routerLink="/payments" (click)="closeMobileMenu()"><i class="fas fa-credit-card"></i> Pagos</a></li>
         <li><a routerLink="/about" (click)="closeMobileMenu()"><i class="fas fa-info-circle"></i> Nosotros</a></li>
         <li *ngIf="!isLoggedIn"><a routerLink="/auth/login" (click)="closeMobileMenu()"><i
           class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
